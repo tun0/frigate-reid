@@ -36,7 +36,12 @@ spec:
         volumeMounts:
           - name: bazarr-config
             mountPath: /config
+          - name: bazarr-media
+            mountPath: /mnt
       volumes:
         - name: bazarr-config
           persistentVolumeClaim:
             claimName: bazarr-config
+        - name: bazarr-media
+          persistentVolumeClaim:
+            claimName: nfs-mercury-mnt
