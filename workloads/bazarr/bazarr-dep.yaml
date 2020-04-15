@@ -45,4 +45,4 @@ spec:
       volumes:
         - name: bazarr-config
           persistentVolumeClaim:
-            claimName: local-path-pvc
+            claimName: bazarr-config
