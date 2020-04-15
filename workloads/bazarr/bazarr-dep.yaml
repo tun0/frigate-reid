@@ -26,12 +26,6 @@ spec:
         - containerPort: 6767
           name: http
           protocol: TCP
-        command:
-        - ./podinfo
-        - --port=9898
-        - --level=info
-        - --random-delay=false
-        - --random-error=false
         env:
         - name: PUID
           value: "1000"
