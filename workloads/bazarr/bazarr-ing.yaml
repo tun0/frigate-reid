@@ -1,0 +1,17 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: bazarr
+  namespace: default
+  labels:
+    app: bazarr
+spec:
+  rules:
+  - host: bazarr.saturn.cluster
+    http:
+      paths:
+        - path: /
+          backend:
+            serviceName: bazarr
+            servicePort: http
