@@ -11,6 +11,6 @@ spec:
     app: bazarr
   ports:
   - name: http
-    port: http
+    port: 6767
     protocol: TCP
     targetPort: http
