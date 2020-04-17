@@ -41,7 +41,7 @@ spec:
       volumes:
       - name: bazarr-config
         persistentVolumeClaim:
-          claimName: bazarr-config
+          claimName: nfs-bazarr-config
       - name: bazarr-media
         persistentVolumeClaim:
           claimName: nfs-mercury-mnt
