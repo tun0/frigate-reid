@@ -45,3 +45,5 @@ spec:
       - name: bazarr-media
         persistentVolumeClaim:
           claimName: nfs-mercury-mnt
+      nodeSelector:
+        kubernetes.io/arch: arm
