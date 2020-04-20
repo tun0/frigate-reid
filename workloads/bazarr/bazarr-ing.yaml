@@ -8,7 +8,7 @@ metadata:
     app: bazarr
 spec:
   rules:
-  - host: bazarr.saturn.cluster
+  - host: bazarr.tun0.eu
     http:
       paths:
         - path: /
