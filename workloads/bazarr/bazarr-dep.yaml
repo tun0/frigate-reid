@@ -34,14 +34,12 @@ spec:
         - name: TZ
           value: Europe/Amsterdam
         volumeMounts:
-        - name: bazarr-config
+        - name: nfs-mercury-mnt
           mountPath: /config
-        - name: bazarr-media
+          subPath: usb2/K8S/APPS/bazarr/config/
+        - name: nfs-mercury-mnt
           mountPath: /mnt
       volumes:
-      - name: bazarr-config
-        persistentVolumeClaim:
-          claimName: nfs-bazarr-config
-      - name: bazarr-media
+      - name: nfs-mercury-mnt
         persistentVolumeClaim:
           claimName: nfs-mercury-mnt
