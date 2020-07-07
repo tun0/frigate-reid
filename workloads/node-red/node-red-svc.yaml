@@ -3,16 +3,16 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: bazarr
-  name: bazarr
+    app: node-red
+  name: node-red
   namespace: default
 spec:
   ports:
   - name: http
-    nodePort: 32767
-    port: 6767
+    nodePort: 31880
+    port: 1880
     protocol: TCP
-    targetPort: 6767
+    targetPort: 1880
   selector:
-    app: bazarr
+    app: node-red
   type: NodePort
