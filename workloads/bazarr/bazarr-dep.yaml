@@ -22,10 +22,6 @@ spec:
       - name: bazarr
         image: linuxserver/bazarr:amd64-v0.8.4.4-ls85
         imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 6767
-          name: http
-          protocol: TCP
         env:
         - name: PUID
           value: "1000"
@@ -33,6 +29,17 @@ spec:
           value: "1000"
         - name: TZ
           value: Europe/Amsterdam
+        ports:
+        - containerPort: 6767
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 20m
+            memory: 350Mi
+          requests:
+            cpu: 10m
+            memory: 230Mi
         volumeMounts:
         - name: nfs-mercury-mnt
           mountPath: /config
