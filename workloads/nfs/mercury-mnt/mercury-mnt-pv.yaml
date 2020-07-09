@@ -4,10 +4,22 @@ kind: PersistentVolume
 metadata:
   name: nfs-mercury-mnt
 spec:
-  capacity:
-    storage: 5Ti
   accessModes:
     - ReadWriteMany
+  capacity:
+    storage: 5Ti
   nfs:
     server: 192.168.178.1
     path: "/mnt/"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-mercury-mnt
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Ti
+  storageClassName: ""
