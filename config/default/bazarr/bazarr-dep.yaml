@@ -1,0 +1,52 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bazarr
+  namespace: default
+  labels:
+    app: bazarr
+  annotations:
+    flux.weave.works/automated: "true"
+    flux.weave.works/tag.bazarr: glob:amd64-v*
+spec:
+  selector:
+    matchLabels:
+      app: bazarr
+  template:
+    metadata:
+      labels:
+        app: bazarr
+    spec:
+      containers:
+      - name: bazarr
+        image: linuxserver/bazarr:amd64-v0.8.4.4-ls85
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: Europe/Amsterdam
+        ports:
+        - containerPort: 6767
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 200m
+            memory: 350Mi
+          requests:
+            cpu: 10m
+            memory: 230Mi
+        volumeMounts:
+        - name: nfs-mercury-mnt
+          mountPath: /config
+          subPath: usb2/K8S/APPS/bazarr/config/
+        - name: nfs-mercury-mnt
+          mountPath: /mnt
+      volumes:
+      - name: nfs-mercury-mnt
+        persistentVolumeClaim:
+          claimName: nfs-mercury-mnt
