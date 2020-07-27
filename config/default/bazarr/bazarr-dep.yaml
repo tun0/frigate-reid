@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: bazarr
-        image: linuxserver/bazarr:amd64-v0.8.4.4-ls87
+        image: linuxserver/bazarr:amd64-v0.9-ls87
         imagePullPolicy: IfNotPresent
         env:
         - name: PUID
