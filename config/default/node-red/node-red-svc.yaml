@@ -9,6 +9,7 @@ metadata:
 spec:
   type: LoadBalancer
   loadBalancerIP: 192.168.178.201
+  externalTrafficPolicy: Local
   selector:
     app: node-red
   ports:
