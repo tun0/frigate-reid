@@ -27,6 +27,10 @@ spec:
           name: http
           protocol: TCP
         resources: {}
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+          fsGroup: 1000
         volumeMounts:
         - name: nfs-mercury-mnt
           mountPath: /config
