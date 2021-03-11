@@ -30,7 +30,7 @@ spec:
         volumeMounts:
         - name: nfs-mercury-mnt
           mountPath: /config
-          subPath: usb2/K8S/APPS/jellyfin/data/
+          subPath: usb2/K8S/APPS/jellyfin/config/
         - name: nfs-mercury-mnt
           subPath: usb1/VIDEO
           mountPath: /media
