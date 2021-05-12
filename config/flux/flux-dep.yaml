@@ -164,6 +164,9 @@ spec:
         # Instruct flux where to put sync bookkeeping (default "git", meaning use a tag in the upstream git repo)
         # - --sync-state=git
 
+        # Enable garbage collection
+        - --sync-garbage-collection
+
         # Include these next two to connect to an "upstream" service
         # (e.g., Weave Cloud). The token is particular to the service.
         # - --connect=wss://cloud.weave.works/api/flux
