@@ -41,12 +41,22 @@ spec:
             cpu: 10m
             memory: 230Mi
         volumeMounts:
-        - name: nfs-mercury-mnt
+        - name: config
           mountPath: /config
-          subPath: usb2/K8S/APPS/bazarr/config/
-        - name: nfs-mercury-mnt
-          mountPath: /mnt
+        - name: movies
+          mountPath: /mnt/usb1/VIDEO/MOVIES
+        - name: series
+          mountPath: /mnt/usb1/VIDEO/SERIES
       volumes:
-      - name: nfs-mercury-mnt
-        persistentVolumeClaim:
-          claimName: nfs-mercury-mnt
+      - name: config
+        nfs:
+          server: 192.168.178.1
+          path: /mnt/usb2/K8S/APPS/bazarr/config
+      - name: movies
+        nfs:
+          server: 192.168.178.1
+          path: /mnt/usb1/VIDEO/MOVIES
+      - name: series
+        nfs:
+          server: 192.168.178.1
+          path: /mnt/usb1/VIDEO/SERIES
