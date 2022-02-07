@@ -7,7 +7,7 @@ metadata:
   name: memcached
   namespace: flux
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       name: memcached
