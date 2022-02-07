@@ -1,0 +1,87 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transmission
+  namespace: default
+  labels:
+    app: transmission
+  annotations:
+    flux.weave.works/automated: "true"
+    flux.weave.works/tag.transmission: semver:^4.0
+spec:
+  selector:
+    matchLabels:
+      app: transmission
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: transmission
+    spec:
+      containers:
+      - name: transmission
+        image: haugene/transmission-openvpn:4.0
+        imagePullPolicy: IfNotPresent
+        envFrom:
+        - configMapRef:
+            name: transmission
+            optional: false
+        - secretRef:
+            name: transmission
+            optional: false
+        ports:
+        - containerPort: 9091
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 2000Mi
+          requests:
+            cpu: 10m
+            memory: 200Mi
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 2
+          successThreshold: 1
+          tcpSocket:
+            port: 9091
+          timeoutSeconds: 2
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 2
+          successThreshold: 2
+          tcpSocket:
+            port: 9091
+          timeoutSeconds: 2
+        securityContext:
+          allowPrivilegeEscalation: true
+          capabilities:
+            add:
+            - NET_ADMIN
+          privileged: true
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - mountPath: /dev/net/tun
+          name: tunnel
+        - mountPath: /etc/localtime
+          name: localtime
+          readOnly: true
+      volumes:
+      - name: data
+        nfs:
+          server: 192.168.178.1
+          path: /mnt/ssd1/transmission-downloads
+      - hostPath:
+          path: /dev/net/tun
+          type: ""
+        name: tunnel
+      - hostPath:
+          path: /etc/localtime
+          type: ""
+        name: localtime
