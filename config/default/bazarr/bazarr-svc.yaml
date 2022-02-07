@@ -9,10 +9,11 @@ metadata:
 spec:
   ports:
   - name: http
-    nodePort: 32767
     port: 6767
     protocol: TCP
     targetPort: 6767
   selector:
-    app: bazarr
-  type: NodePort
+    app: jackett
+  type: LoadBalancer
+  loadBalancerIP: 192.168.178.204
+  externalTrafficPolicy: Local
