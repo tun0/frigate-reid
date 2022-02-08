@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: bazarr
-        image: linuxserver/bazarr:amd64-v1.0.1-ls138 # {"$imagepolicy": "flux-system/bazarr-policy"}
+        image: linuxserver/bazarr:amd64-v1.0.1-ls138 # {"$imagepolicy": "flux-system:bazarr-policy"}
         imagePullPolicy: IfNotPresent
         env:
         - name: PUID
