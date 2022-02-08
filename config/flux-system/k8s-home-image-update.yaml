@@ -1,0 +1,20 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageUpdateAutomation
+metadata:
+  name: k8s-home
+  namespace: flux-system
+spec:
+  git:
+    checkout:
+      ref:
+        branch: master
+    commit:
+      author:
+        email: fluxbot@tun0.nl
+        name: FluxBot
+  interval: 5m0s
+  sourceRef:
+    kind: GitRepository
+    name: k8s-home
+
