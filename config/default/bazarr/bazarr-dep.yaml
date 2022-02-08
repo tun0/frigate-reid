@@ -6,9 +6,6 @@ metadata:
   namespace: default
   labels:
     app: bazarr
-  annotations:
-    flux.weave.works/automated: "true"
-    flux.weave.works/tag.bazarr: glob:amd64-v*
 spec:
   selector:
     matchLabels:
@@ -20,7 +17,7 @@ spec:
     spec:
       containers:
       - name: bazarr
-        image: linuxserver/bazarr:amd64-v1.0.1-ls138
+        image: linuxserver/bazarr:amd64-v1.0.1-ls138 # {"$imagepolicy": "default/bazarr-policy"}
         imagePullPolicy: IfNotPresent
         env:
         - name: PUID
