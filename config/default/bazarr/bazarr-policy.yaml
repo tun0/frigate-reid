@@ -1,0 +1,13 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImagePolicy
+metadata:
+  name: bazarr-policy
+  namespace: default
+spec:
+  imageRepositoryRef:
+    name: bazarr-image
+  policy:
+    semver:
+      range: ^1.0
+
