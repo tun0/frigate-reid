@@ -26,16 +26,17 @@ spec:
       - args:
         - --port=7472
         - --config=config
-        image: quay.io/metallb/controller:main
-        imagePullPolicy: Always
+        - --log-level=info
+        env:
+        - name: METALLB_ML_SECRET_NAME
+          value: memberlist
+        - name: METALLB_DEPLOYMENT
+          value: controller
+        image: quay.io/metallb/controller:v0.11.0
         name: controller
         ports:
         - containerPort: 7472
           name: monitoring
-        resources:
-          limits:
-            cpu: 100m
-            memory: 100Mi
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -47,5 +48,6 @@ spec:
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534
+        fsGroup: 65534
       serviceAccountName: controller
       terminationGracePeriodSeconds: 0

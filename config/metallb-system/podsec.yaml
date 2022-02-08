@@ -50,9 +50,7 @@ metadata:
 spec:
   allowPrivilegeEscalation: false
   allowedCapabilities:
-  - NET_ADMIN
   - NET_RAW
-  - SYS_ADMIN
   allowedHostPaths: []
   defaultAddCapabilities: []
   defaultAllowPrivilegeEscalation: false
@@ -64,6 +62,8 @@ spec:
   hostPorts:
   - max: 7472
     min: 7472
+  - max: 7946
+    min: 7946
   privileged: true
   readOnlyRootFilesystem: true
   requiredDropCapabilities:
