@@ -2,20 +2,20 @@
 apiVersion: image.toolkit.fluxcd.io/v1beta1
 kind: ImageRepository
 metadata:
-  name: bazarr-image
+  name: jackett-image
   namespace: flux-system
 spec:
-  image: linuxserver/bazarr
+  image: linuxserver/jackett
   interval: 5m0s
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta1
 kind: ImagePolicy
 metadata:
-  name: bazarr-policy
+  name: jackett-policy
   namespace: flux-system
 spec:
   imageRepositoryRef:
-    name: bazarr-image
+    name: jackett-image
   policy:
     semver:
-      range: ^1.0
+      range: ^0.20

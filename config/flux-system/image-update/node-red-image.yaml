@@ -2,20 +2,20 @@
 apiVersion: image.toolkit.fluxcd.io/v1beta1
 kind: ImageRepository
 metadata:
-  name: bazarr-image
+  name: node-red-image
   namespace: flux-system
 spec:
-  image: linuxserver/bazarr
+  image: nodered/node-red
   interval: 5m0s
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta1
 kind: ImagePolicy
 metadata:
-  name: bazarr-policy
+  name: node-red-policy
   namespace: flux-system
 spec:
   imageRepositoryRef:
-    name: bazarr-image
+    name: node-red-image
   policy:
     semver:
       range: ^1.0

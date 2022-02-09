@@ -2,20 +2,20 @@
 apiVersion: image.toolkit.fluxcd.io/v1beta1
 kind: ImageRepository
 metadata:
-  name: bazarr-image
+  name: transmission-image
   namespace: flux-system
 spec:
-  image: linuxserver/bazarr
+  image: haugene/transmission-openvpn
   interval: 5m0s
 ---
 apiVersion: image.toolkit.fluxcd.io/v1beta1
 kind: ImagePolicy
 metadata:
-  name: bazarr-policy
+  name: transmission-policy
   namespace: flux-system
 spec:
   imageRepositoryRef:
-    name: bazarr-image
+    name: transmission-image
   policy:
     semver:
-      range: ^1.0
+      range: ^4.0
