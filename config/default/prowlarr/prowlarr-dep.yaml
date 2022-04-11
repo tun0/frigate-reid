@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prowlarr
+  namespace: default
+  labels:
+    app: prowlarr
+spec:
+  selector:
+    matchLabels:
+      app: prowlarr
+  template:
+    metadata:
+      labels:
+        app: prowlarr
+    spec:
+      containers:
+      - name: prowlarr
+        image: linuxserver/prowlarr:develop-version-0.2.0.1676 # {"$imagepolicy": "flux-system:prowlarr-policy"}
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: Europe/Amsterdam
+        ports:
+        - containerPort: 9696
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            #cpu: 200m
+            memory: 350Mi
+          requests:
+            cpu: 10m
+            memory: 230Mi
+        volumeMounts:
+        - name: config
+          mountPath: /config
+      volumes:
+      - name: config
+        nfs:
+          server: 192.168.178.1
+          path: /mnt/usb2/K8S/APPS/prowlarr/config
