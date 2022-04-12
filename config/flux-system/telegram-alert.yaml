@@ -11,8 +11,8 @@ spec:
   eventSources:
   - kind: GitRepository
     name: '*'
-  - kind: ImagePolicy
-    name: '*'
+  # - kind: ImagePolicy
+  #   name: '*'
   - kind: ImageRepository
     name: '*'
   - kind: ImageUpdateAutomation
