@@ -17,7 +17,7 @@ spec:
   imageRepositoryRef:
     name: prowlarr-image
   filterTags:
-    pattern: '^develop-version-[-9]+.[0-9]+.[0-9]+.(?P<n>[0-9]+)'
+    pattern: '^develop-version-[0-9]+.[0-9]+.[0-9]+.(?P<n>[0-9]+)'
     extract: '$n'
   policy:
     numerical:
