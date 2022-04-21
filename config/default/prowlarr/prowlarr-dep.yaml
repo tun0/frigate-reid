@@ -31,7 +31,6 @@ spec:
           protocol: TCP
         resources:
           limits:
-            #cpu: 200m
             memory: 350Mi
           requests:
             cpu: 10m
@@ -39,6 +38,22 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /config
+      - name: flaresolverr
+        image: flaresolverr/flaresolverr:v2.2.4
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: TZ
+          value: Europe/Amsterdam
+        ports:
+        - containerPort: 8191
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            memory: 350Mi
+          requests:
+            cpu: 10m
+            memory: 230Mi
       volumes:
       - name: config
         nfs:
