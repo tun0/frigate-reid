@@ -27,11 +27,11 @@ spec:
 
         Images:
         {{ range .Updated.Images -}}
-        - {{.}}
+        - {{ . }}
         {{ end -}}
 
         Raw:
-        {{ . }}
+        {{ toJson .Updated }}
       author:
         email: fluxbot@tun0.nl
         name: FluxBot
