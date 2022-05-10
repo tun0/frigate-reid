@@ -17,12 +17,12 @@ spec:
 
         Files:
         {{ range $filename, $_ := .Updated.Files -}}
-        - {{ $filename }}
+        - {{ $filename }} {{ $_ }}
         {{ end -}}
 
         Objects:
         {{ range $resource, $_ := .Updated.Objects -}}
-        - {{ $resource.Kind }} {{ $resource.Name }}
+        - {{ $resource.Kind }} {{ $resource.Name }} {{ $_ }}
         {{ end -}}
 
         Images:
