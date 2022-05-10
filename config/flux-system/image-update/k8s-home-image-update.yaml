@@ -31,7 +31,7 @@ spec:
         {{ end -}}
 
         Raw:
-        {{ toPrettyJson .Updated }}
+        {{ printf "%#v" . }}
       author:
         email: fluxbot@tun0.nl
         name: FluxBot
