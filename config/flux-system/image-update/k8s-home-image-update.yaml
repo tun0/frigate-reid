@@ -30,8 +30,10 @@ spec:
         - {{ . }}
         {{ end -}}
 
-        Raw:
+        Raw#:
         {{ printf "%#v" .Updated }}
+        Raw+:
+        {{ printf "%+v" .Updated }}
       author:
         email: fluxbot@tun0.nl
         name: FluxBot
