@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: vaultwarden
-        image: linuxserver/vaultwarden:1.25.1-alpine
+        image: vaultwarden/server:1.25.2-alpine
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
