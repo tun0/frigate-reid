@@ -19,4 +19,4 @@ spec:
     targetPort: http
     nodePort: null
   loadBalancerIP: 192.168.178.207
-  externalTrafficPolicy: local
+  externalTrafficPolicy: Local
