@@ -23,7 +23,7 @@ spec:
           name: http
           protocol: TCP
         envFrom:
-          secretRef:
+        - secretRef:
             name: vaultwarden
         resources:
           limits:
