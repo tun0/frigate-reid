@@ -22,6 +22,9 @@ spec:
         - containerPort: 80
           name: http
           protocol: TCP
+        envFrom:
+          secretRef:
+            name: vaultwarden
         resources:
           limits:
             memory: 1024Mi
