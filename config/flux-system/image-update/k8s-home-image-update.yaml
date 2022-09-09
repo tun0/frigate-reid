@@ -31,9 +31,9 @@ spec:
         {{ end -}}
 
         Updates:
-        {{ range $update, $_ := .Updated }}
+        {{ for $update, $_ := .Updated { }}
         - {{ $update }}
-        {{ end -}}
+        {{ } -}}
       author:
         email: fluxbot@tun0.nl
         name: FluxBot
