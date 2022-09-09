@@ -17,12 +17,12 @@ spec:
 
         Files:
         {{ range $filename, $_ := .Updated.Files -}}
-        - {{ $filename }} {{ $_ }}
+        - {{ $filename }}
         {{ end -}}
 
         Objects:
         {{ range $resource, $_ := .Updated.Objects -}}
-        - {{ $resource.Kind }} {{ $resource.Name }} {{ $_ }}
+        - {{ $resource.Kind }}/{{ $resource.Name }}
         {{ end -}}
 
         Images:
@@ -30,10 +30,10 @@ spec:
         - {{ . }}
         {{ end -}}
 
-        Raw#:
-        {{ printf "%#v" .Updated }}
-        Raw+:
-        {{ printf "%+v" .Updated }}
+        Updates:
+        {{ range $update, $_ := .Updated }}
+        - {{ $update }}
+        {{ end -}}
       author:
         email: fluxbot@tun0.nl
         name: FluxBot
