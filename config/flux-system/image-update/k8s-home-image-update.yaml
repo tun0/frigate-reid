@@ -31,9 +31,12 @@ spec:
         {{ end -}}
 
         Updates:
-        {{ for $update, $_ := .Updated { }}
-        - {{ $update }}
-        {{ } -}}
+        {{ range $file, $fileresult := .Updated.Files -}}
+        - {{ $file }}:
+          {{ range $object, $imageref := $fileresult -}}
+          - {{ $object }}
+          {{ end -}}
+        {{ end -}}
       author:
         email: fluxbot@tun0.nl
         name: FluxBot
