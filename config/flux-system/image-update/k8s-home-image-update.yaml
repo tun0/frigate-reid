@@ -24,7 +24,7 @@ spec:
 
         Objects:
         {{ range $resource, $_ := .Updated.Objects -}}
-        - {{ $resource.Kind }}/{{ $resource.Name }}
+        - {{ $resource.Kind }}/{{ $resource.Name }}: {{ $_ }}
         {{ end -}}
 
         Images:
