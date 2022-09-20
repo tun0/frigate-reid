@@ -15,31 +15,14 @@ spec:
 
         Automation name: {{ .AutomationObject }}
 
-        {{ $files := .Updated.Files -}}
-        Files:
-        {{ range $filename, $_:= .Updated.Files -}}
-        - {{ $filename }}
-          - {{ index $files $filename }}
-        {{ end -}}
-
-        Objects:
-        {{ range $resource, $_ := .Updated.Objects -}}
-        - {{ $resource.Kind }}/{{ $resource.Name }}: {{ $_ }}
-        {{ end -}}
-
-        Images:
-        {{ range .Updated.Images -}}
-        - {{ . }}
-        {{ end -}}
-
         Updates:
         {{ range $file, $fileresult := .Updated.Files -}}
-        -- {{ $file }}: {{ $fileresult }} / {{ $fileresult.Objects }}
+        -- File: {{ $file }}
           {{ range $object, $imagerefs := $fileresult.Objects -}}
         ---- Kind: {{ $object.APIVersion }}/{{ $object.Kind }}
         ---- Name: {{ $object.Namespace }}/{{ $object.Name }}
-            {{ range $imageref := $imagerefs }}
-        ---- Image: {{ $imageref.Name }}
+            {{ range $imageref := $imagerefs -}}
+        ------ Image: {{ $imageref.Name }}
             {{ end -}}
           {{ end -}}
         {{ end -}}
