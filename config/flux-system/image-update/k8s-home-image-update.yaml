@@ -39,7 +39,7 @@ spec:
         ---- Kind: {{ $object.APIVersion }}/{{ $object.Kind }}
         ---- Name: {{ $object.Namespace }}/{{ $object.Name }}
             {{ range $imageref := $imagerefs }}
-        ---- Image: {{ $imageref.Registry }}
+        ---- Image: {{ $imageref.Name }}
             {{ end -}}
           {{ end -}}
         {{ end -}}
