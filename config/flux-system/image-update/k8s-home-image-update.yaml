@@ -18,7 +18,7 @@ spec:
         Files:
         {{ range $filename, $_ := .Updated.Files -}}
         - {{ $filename }}
-          - {{ .Updated.Files[$filename] }}
+          - {{ index .Updated.Files $filename }}
         {{ end -}}
 
         Objects:
