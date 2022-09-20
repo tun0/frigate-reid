@@ -18,13 +18,13 @@ spec:
         Updates:
         {{ range $file, $fileresult := .Updated.Files -}}
         -- File: {{ $file }}
-          {{ range $object, $imagerefs := $fileresult.Objects -}}
+        {{ range $object, $imagerefs := $fileresult.Objects -}}
         ---- Kind: {{ $object.APIVersion }}/{{ $object.Kind }}
         ---- Name: {{ $object.Namespace }}/{{ $object.Name }}
-            {{ range $imageref := $imagerefs -}}
+        {{ range $imageref := $imagerefs -}}
         ------ Image: {{ $imageref.Name }}
-            {{ end -}}
-          {{ end -}}
+        {{ end -}}
+        {{ end -}}
         {{ end -}}
       author:
         email: fluxbot@tun0.nl
