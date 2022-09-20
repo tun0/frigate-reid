@@ -15,10 +15,11 @@ spec:
 
         Automation name: {{ .AutomationObject }}
 
+        {{ set $files := .Updated.Files -}}
         Files:
         {{ range $filename := .Updated.Files -}}
         - {{ $filename }}
-          - {{ index .Updated.Files $filename }}
+          - {{ index $files $filename }}
         {{ end -}}
 
         Objects:
