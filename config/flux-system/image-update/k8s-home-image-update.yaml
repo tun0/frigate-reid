@@ -38,7 +38,7 @@ spec:
           {{ range $object, $imagerefs := $fileresult.Objects -}}
         ---- Kind: {{ $object.APIVersion }}/{{ $object.Kind }}
         ---- Name: {{ $object.Namespace }}/{{ $object.Name }}
-            {{ range $imagerefs, $_ := $imagerefs }}
+            {{ range $imageref, $_ := $imagerefs }}
         ---- Image: {{ $imageref.Registry }}
             {{ end -}}
           {{ end -}}
