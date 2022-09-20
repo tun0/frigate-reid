@@ -34,8 +34,7 @@ spec:
 
         Updates:
         {{ range $file, $fileresult := .Updated.Files -}}
-        - {{ $file }}: {{ $fileresult.Objects }}
-         -- {{ index $files $file $fileresult }}
+        - {{ $file }}: {{ $fileresult }} / {{ $fileresult.Objects }}
           {{ range $object, $imageref := $fileresult.Objects -}}
           - {{ $object }}
           {{ end -}}
