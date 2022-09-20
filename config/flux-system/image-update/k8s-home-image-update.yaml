@@ -36,7 +36,7 @@ spec:
         {{ range $file, $fileresult := .Updated.Files -}}
         - {{ $file }}: {{ $fileresult }} / {{ $fileresult.Objects }}
           {{ range $object, $imageref := $fileresult.Objects -}}
-          - {{ $objet.APIVersion }}/{{ $object.Kind }}/{{ $object.Namespace }}/{{ $object.Name }}: {{ $imageref }}
+          - {{ $object.APIVersion }}/{{ $object.Kind }}/{{ $object.Namespace }}/{{ $object.Name }}: {{ $imageref }}
           {{ end -}}
         {{ end -}}
       author:
