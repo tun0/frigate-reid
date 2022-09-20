@@ -16,13 +16,13 @@ spec:
         Automation name: {{ .AutomationObject }}
 
         Files:
-        {{ range $filename, $_ := .Updated.Files -}}
+        {{ range $filename := .Updated.Files -}}
         - {{ $filename }}
           - {{ index .Updated.Files $filename }}
         {{ end -}}
 
         Objects:
-        {{ range $resource, $_ := .Updated.Objects -}}
+        {{ range $resource := .Updated.Objects -}}
         - {{ $resource.Kind }}/{{ $resource.Name }}
         {{ end -}}
 
