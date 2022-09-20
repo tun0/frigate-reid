@@ -32,7 +32,7 @@ spec:
 
         Updates:
         {{ range $file, $fileresult := .Updated.Files -}}
-        - {{ $file }}:
+        - {{ $file }}: {{ $fileresult }}
           {{ range $object, $imageref := $fileresult.Objects -}}
           - {{ $object }}
           {{ end -}}
