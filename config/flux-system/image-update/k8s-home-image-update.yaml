@@ -17,13 +17,13 @@ spec:
 
         {{ $files := .Updated.Files -}}
         Files:
-        {{ range $filename := .Updated.Files -}}
+        {{ range $filename, $_:= .Updated.Files -}}
         - {{ $filename }}
           - {{ index $files $filename }}
         {{ end -}}
 
         Objects:
-        {{ range $resource := .Updated.Objects -}}
+        {{ range $resource, $_ := .Updated.Objects -}}
         - {{ $resource.Kind }}/{{ $resource.Name }}
         {{ end -}}
 
