@@ -35,6 +35,7 @@ spec:
         Updates:
         {{ range $file, $fileresult := .Updated.Files -}}
         - {{ $file }}: {{ $fileresult }}
+         -- {{ index $files $file $fileresult }}
           {{ range $object, $imageref := $fileresult.Objects -}}
           - {{ $object }}
           {{ end -}}
