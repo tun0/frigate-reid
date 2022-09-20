@@ -15,7 +15,7 @@ spec:
 
         Automation name: {{ .AutomationObject }}
 
-        {{ set $files := .Updated.Files -}}
+        {{ $files := .Updated.Files -}}
         Files:
         {{ range $filename := .Updated.Files -}}
         - {{ $filename }}
