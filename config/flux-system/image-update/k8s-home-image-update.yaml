@@ -34,9 +34,11 @@ spec:
 
         Updates:
         {{ range $file, $fileresult := .Updated.Files -}}
-        - {{ $file }}: {{ $fileresult }} / {{ $fileresult.Objects }}
+        -- {{ $file }}: {{ $fileresult }} / {{ $fileresult.Objects }}
           {{ range $object, $imageref := $fileresult.Objects -}}
-          - {{ $object.APIVersion }}/{{ $object.Kind }}/{{ $object.Namespace }}/{{ $object.Name }}: {{ $imageref }}
+        ---- Kind: {{ $object.APIVersion }}/{{ $object.Kind }}
+        ---- Name: {{ $object.Namespace }}/{{ $object.Name }}
+        ---- Image: {{ $imageref.Reference.Registry.registry }}
           {{ end -}}
         {{ end -}}
       author:
