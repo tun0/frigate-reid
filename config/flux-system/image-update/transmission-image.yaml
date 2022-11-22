@@ -17,5 +17,5 @@ spec:
   imageRepositoryRef:
     name: transmission-image
   policy:
-    semver:
+    numerical:
       range: ^4.0

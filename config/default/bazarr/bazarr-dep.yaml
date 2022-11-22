@@ -45,9 +45,11 @@ spec:
           mountPath: /mnt/usb1/VIDEO/SERIES
       volumes:
       - name: config
-        nfs:
-          server: 192.168.178.1
-          path: /mnt/usb2/K8S/APPS/bazarr/config
+        persistentVolumeClaim:
+          claimName: bazarr-config
+        # nfs:
+        #   server: 192.168.178.1
+        #   path: /mnt/usb2/K8S/APPS/bazarr/config
       - name: movies
         nfs:
           server: 192.168.178.1
