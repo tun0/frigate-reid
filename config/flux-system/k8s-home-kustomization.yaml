@@ -1,0 +1,16 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  annotations:
+    reconcile.fluxcd.io/requestedAt: "2022-11-22T13:42:08.313794915+01:00"
+  name: k8s-home
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  path: ./config
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: k8s-home
+
