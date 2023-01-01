@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: jackett
-        image: linuxserver/jackett:0.20.2464 # {"$imagepolicy": "flux-system:jackett-policy"}
+        image: linuxserver/jackett:0.20.2465 # {"$imagepolicy": "flux-system:jackett-policy"}
         imagePullPolicy: IfNotPresent
         env:
         - name: PUID
