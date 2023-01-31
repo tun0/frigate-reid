@@ -11,7 +11,7 @@ spec:
         branch: master
     commit:
       messageTemplate: |
-        Automated image update
+        Automated image update:{{ range $images := .Updated.Images }} {{ $images }}{{ end }}
 
         Automation name: {{ .AutomationObject }}
 
@@ -28,24 +28,27 @@ spec:
         {{ end }}
 
         ### YAML START ###
-        {{ range $file, $fileresult := .Updated.Files -}}
         ---
-        filename: {{ $file }}
-        objects:
-        {{ range $object, $imagerefs := $fileresult.Objects -}}
+        automation: {{ .AutomationObject }}
+        files:
+        {{ range $file, $fileresult := .Updated.Files -}}
         -
-          apiVersion: {{ $object.APIVersion }}
-          kind: {{ $object.Kind }}
-          name: {{ $object.Name }}
-          namespace: {{ $object.Namespace }}
-          images:
-        {{- range $imageref := $imagerefs }}
+          filename: {{ $file }}
+          objects:
+        {{ range $object, $imagerefs := $fileresult.Objects -}}
           -
-            shortName: {{ $imageref.String }}
-            fullName: {{ $imageref.Name }}
-            registry: {{ $imageref.Registry }}
-            repository: {{ $imageref.Repository }}
-            identifier: {{ $imageref.Identifier }}
+            apiVersion: {{ $object.APIVersion }}
+            kind: {{ $object.Kind }}
+            name: {{ $object.Name }}
+            namespace: {{ $object.Namespace }}
+            images:
+        {{- range $imageref := $imagerefs }}
+            -
+              shortName: {{ $imageref.String }}
+              fullName: {{ $imageref.Name }}
+              registry: {{ $imageref.Registry }}
+              repository: {{ $imageref.Repository }}
+              identifier: {{ $imageref.Identifier }}
         {{ end -}}
         {{ end -}}
         {{ end }}
