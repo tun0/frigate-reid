@@ -13,21 +13,6 @@ spec:
       messageTemplate: |
         Automated image update:{{ range $images := .Updated.Images }} {{ $images }}{{ end }}
 
-        Automation name: {{ .AutomationObject }}
-
-        Updates:
-        {{ range $file, $fileresult := .Updated.Files -}}
-          File: {{ $file }}
-        {{ range $object, $imagerefs := $fileresult.Objects -}}
-            Kind: {{ $object.APIVersion }}/{{ $object.Kind }}
-            Name: {{ $object.Namespace }}/{{ $object.Name }}
-        {{ range $imageref := $imagerefs -}}
-              Image: {{ $imageref.Name }}
-        {{ end -}}
-        {{ end -}}
-        {{ end }}
-
-        ### YAML START ###
         ---
         automation: {{ .AutomationObject }}
         files:
@@ -52,7 +37,7 @@ spec:
         {{ end -}}
         {{ end -}}
         {{ end -}}
-        ### YAML END ###
+        ...
       author:
         email: fluxbot@tun0.nl
         name: FluxBot
