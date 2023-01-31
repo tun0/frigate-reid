@@ -40,7 +40,12 @@ spec:
           namespace: {{ $object.Namespace }}
           images:
         {{- range $imageref := $imagerefs }}
-          - {{ $imageref.Name }}
+          -
+            shortName: {{ $imageref.String }}
+            fullName: {{ $imageref.Name }}
+            registry: {{ $imageref.Registry }}
+            repository: {{ $imageref.Repository }}
+            identifier: {{ $imageref.Identifier }}
         {{ end -}}
         {{ end -}}
         {{ end -}}
