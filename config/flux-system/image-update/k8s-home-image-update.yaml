@@ -51,7 +51,7 @@ spec:
               identifier: {{ $imageref.Identifier }}
         {{ end -}}
         {{ end -}}
-        {{ end }}
+        {{ end -}}
         ### YAML END ###
       author:
         email: fluxbot@tun0.nl
