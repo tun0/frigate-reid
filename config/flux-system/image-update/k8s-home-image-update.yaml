@@ -17,15 +17,34 @@ spec:
 
         Updates:
         {{ range $file, $fileresult := .Updated.Files -}}
-        |--> File: {{ $file }}
+          File: {{ $file }}
         {{ range $object, $imagerefs := $fileresult.Objects -}}
-        | |--> Kind: {{ $object.APIVersion }}/{{ $object.Kind }}
-        | |--> Name: {{ $object.Namespace }}/{{ $object.Name }}
+            Kind: {{ $object.APIVersion }}/{{ $object.Kind }}
+            Name: {{ $object.Namespace }}/{{ $object.Name }}
         {{ range $imageref := $imagerefs -}}
-        |   |--> Image: {{ $imageref.Name }}
+              Image: {{ $imageref.Name }}
         {{ end -}}
         {{ end -}}
         {{ end -}}
+
+        YAML:
+        {{ range $file, $fileresult := .Updated.Files -}}
+        ---
+        filename: {{ $file }}
+        objects:
+        {{ range $object, $imagerefs := $fileresult.Objects -}}
+        -
+          apiVersion: {{ $object.APIVersion }}
+          kind: {{ $object.Kind }}
+          name: {{ $object.Name }}
+          namespace: {{ $object.Namespace }}
+          images:
+        {{ range $imageref := $imagerefs -}}
+          - {{ $imageref.Name }}
+        {{ end -}}
+        {{ end -}}
+        {{ end -}}
+
       author:
         email: fluxbot@tun0.nl
         name: FluxBot
