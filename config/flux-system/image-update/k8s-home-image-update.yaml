@@ -31,11 +31,11 @@ spec:
         ---
         automation: {{ .AutomationObject }}
         files:
-        {{ range $file, $fileresult := .Updated.Files -}}
+        {{- range $file, $fileresult := .Updated.Files }}
         -
           filename: {{ $file }}
           objects:
-        {{ range $object, $imagerefs := $fileresult.Objects }}
+        {{- range $object, $imagerefs := $fileresult.Objects }}
           -
             apiVersion: {{ $object.APIVersion }}
             kind: {{ $object.Kind }}
