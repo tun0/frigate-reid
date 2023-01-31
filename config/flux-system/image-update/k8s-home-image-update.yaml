@@ -45,7 +45,7 @@ spec:
           registry: {{ $imageref.Registry }}
           repository: {{ $imageref.Repository }}
           identifier: {{ $imageref.Identifier }}
-        {{- end -}}
+        {{- end }}
         ...
       author:
         email: fluxbot@tun0.nl
