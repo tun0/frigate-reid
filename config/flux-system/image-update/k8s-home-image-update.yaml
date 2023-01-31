@@ -31,7 +31,7 @@ spec:
         ---
         automation: {{ .AutomationObject }}
         files:
-        {{ range $file, $fileresult := .Updated.Files }}
+        {{ range $file, $fileresult := .Updated.Files -}}
         -
           filename: {{ $file }}
           objects:
