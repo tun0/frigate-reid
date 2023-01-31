@@ -39,7 +39,7 @@ spec:
           name: {{ $object.Name }}
           namespace: {{ $object.Namespace }}
           images:
-        {{ range $imageref := $imagerefs }}
+        {{- range $imageref := $imagerefs }}
           - {{ $imageref.Name }}
         {{ end -}}
         {{ end -}}
