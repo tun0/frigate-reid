@@ -37,13 +37,6 @@ spec:
         {{- end -}}
         {{- end -}}
         {{- end }}
-        images:
-        {{ range $imageref := .Updated.Images }}-
-          shortName: {{ $imageref.String }}
-          fullName: {{ $imageref.Name }}
-          registry: {{ $imageref.Registry }}
-          repository: {{ $imageref.Repository }}
-          identifier: {{ $imageref.Identifier }}{{ end }}
         ...
       author:
         email: fluxbot@tun0.nl
