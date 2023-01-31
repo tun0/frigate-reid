@@ -25,9 +25,10 @@ spec:
               Image: {{ $imageref.Name }}
         {{ end -}}
         {{ end -}}
-        {{ end -}}
+        {{ end }}
 
-        YAML:
+        YAML1:
+        ```yaml
         {{ range $file, $fileresult := .Updated.Files -}}
         ---
         filename: {{ $file }}
@@ -48,7 +49,33 @@ spec:
             identifier: {{ $imageref.Identifier }}
         {{ end -}}
         {{ end -}}
+        {{ end }}
+        ```
+
+        YAML2:
+        ```
+        {{ range $file, $fileresult := .Updated.Files -}}
+        ---
+        filename: {{ $file }}
+        objects:
+        {{ range $object, $imagerefs := $fileresult.Objects -}}
+        -
+          apiVersion: {{ $object.APIVersion }}
+          kind: {{ $object.Kind }}
+          name: {{ $object.Name }}
+          namespace: {{ $object.Namespace }}
+          images:
+        {{- range $imageref := $imagerefs }}
+          -
+            shortName: {{ $imageref.String }}
+            fullName: {{ $imageref.Name }}
+            registry: {{ $imageref.Registry }}
+            repository: {{ $imageref.Repository }}
+            identifier: {{ $imageref.Identifier }}
         {{ end -}}
+        {{ end -}}
+        {{ end }}
+        ```
 
       author:
         email: fluxbot@tun0.nl
