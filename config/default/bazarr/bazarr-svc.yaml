@@ -8,8 +8,12 @@ metadata:
   namespace: default
 spec:
   ports:
-  - name: http
+  - name: bazarr
     port: 6767
+    protocol: TCP
+    targetPort: 6767
+  - name: http
+    port: 80
     protocol: TCP
     targetPort: 6767
   selector:
