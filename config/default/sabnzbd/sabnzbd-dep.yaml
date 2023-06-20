@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: sabnzbd
-        image: linuxserver/sabnzbd:3.4.2 # {"$imagepolicy": "flux-system:sabnzbd-policy"}
+        image: linuxserver/sabnzbd:4.0.2 # {"$imagepolicy": "flux-system:sabnzbd-policy"}
         imagePullPolicy: IfNotPresent
         env:
         - name: PUID
