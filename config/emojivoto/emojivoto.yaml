@@ -1,6 +1,8 @@
 apiVersion: v1
 kind: Namespace
 metadata:
+  annotations:
+    linkerd.io/inject: enabled
   name: emojivoto
 ---
 apiVersion: v1
@@ -84,6 +86,8 @@ spec:
       version: v11
   template:
     metadata:
+      annotations:
+        linkerd.io/inject: enabled
       labels:
         app: emoji-svc
         version: v11
@@ -123,6 +127,8 @@ spec:
       version: v11
   template:
     metadata:
+      annotations:
+        linkerd.io/inject: enabled
       labels:
         app: vote-bot
         version: v11
@@ -156,6 +162,8 @@ spec:
       version: v11
   template:
     metadata:
+      annotations:
+        linkerd.io/inject: enabled
       labels:
         app: voting-svc
         version: v11
@@ -195,6 +203,8 @@ spec:
       version: v11
   template:
     metadata:
+      annotations:
+        linkerd.io/inject: enabled
       labels:
         app: web-svc
         version: v11
