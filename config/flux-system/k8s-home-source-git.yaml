@@ -1,5 +1,5 @@
 ---
-apiVersion: source.toolkit.fluxcd.io/v1beta2
+apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
   annotations:
@@ -7,7 +7,6 @@ metadata:
   name: k8s-home
   namespace: flux-system
 spec:
-  gitImplementation: go-git
   interval: 1m0s
   ref:
     branch: master
