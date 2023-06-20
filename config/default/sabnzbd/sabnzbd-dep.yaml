@@ -44,9 +44,11 @@ spec:
           mountPath: /incomplete-downloads
       volumes:
       - name: config
-        nfs:
-          server: 192.168.178.1
-          path: /mnt/usb2/K8S/APPS/sabnzbd/config
+        persistentVolumeClaim:
+          claimName: sabnzbd-config
+        # nfs:
+        #   server: 192.168.178.1
+        #   path: /mnt/usb2/K8S/APPS/sabnzbd/config
       - name: downloads
         nfs:
           server: 192.168.178.1
