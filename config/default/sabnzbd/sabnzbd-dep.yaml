@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sabnzbd
+  namespace: default
+  labels:
+    app: sabnzbd
+spec:
+  selector:
+    matchLabels:
+      app: sabnzbd
+  template:
+    metadata:
+      labels:
+        app: sabnzbd
+    spec:
+      containers:
+      - name: sabnzbd
+        image: linuxserver/sabnzbd:3.4.2 # {"$imagepolicy": "flux-system:sabnzbd-policy"}
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: Europe/Amsterdam
+        ports:
+        - containerPort: 6767
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            memory: 2Gi
+          requests:
+            cpu: 100m
+            memory: 512Mi
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: downloads
+          mountPath: /downloads
+        - name: incomplete-downloads
+          mountPath: /incomplete-downloads
+      volumes:
+      - name: config
+        nfs:
+          server: 192.168.178.1
+          path: /mnt/usb2/K8S/APPS/sabnzbd/config
+      - name: downloads
+        nfs:
+          server: 192.168.178.1
+          path: /mnt/ssd1/sabnzbd/downloads/complete/
+      - name: incomplete-downloads
+        nfs:
+          server: 192.168.178.1
+          path: /mnt/ssd1/sabnzbd/downloads/incomplete/
+
