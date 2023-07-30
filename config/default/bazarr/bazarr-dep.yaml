@@ -54,9 +54,9 @@ spec:
           #   path: /mnt/usb2/K8S/APPS/bazarr/config
       - name: movies
         nfs:
-          server: 192.168.178.1
-          path: /mnt/usb1/VIDEO/MOVIES
+          server: 192.168.178.167
+          path: /mnt/everything/VIDEO/MOVIES
       - name: series
         nfs:
-          server: 192.168.178.1
-          path: /mnt/usb1/VIDEO/SERIES
+          server: 192.168.178.167
+          path: /mnt/everything/VIDEO/SERIES
