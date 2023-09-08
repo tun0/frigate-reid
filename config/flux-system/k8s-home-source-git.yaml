@@ -5,11 +5,10 @@ metadata:
   name: k8s-home
   namespace: flux-system
 spec:
-  interval: 1m0s
+  interval: 10m0s
   ref:
     branch: master
   secretRef:
     name: k8s-home
-  timeout: 1m0s
+  timeout: 5m0s
   url: ssh://git@github.com/tun0/k8s-home
-

@@ -41,7 +41,7 @@ spec:
       author:
         email: fluxbot@tun0.nl
         name: FluxBot
-  interval: 5m0s
+  interval: 15m0s
   sourceRef:
     kind: GitRepository
     name: k8s-home
