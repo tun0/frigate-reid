@@ -21,49 +21,49 @@ spec:
           - name: ndots
             value: "1"
       containers:
-      - name: sonarr
-        image: linuxserver/sonarr:develop-version-5.0.3.8127 # {"$imagepolicy": "flux-system:sonarr-policy"}
-        imagePullPolicy: IfNotPresent
-        env:
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
-        - name: TZ
-          value: Europe/Amsterdam
-        ports:
-        - containerPort: 6767
-          name: http
-          protocol: TCP
-        resources:
-          limits:
-            #cpu: 200m
-            memory: 768Mi
-          requests:
-            cpu: 10m
-            memory: 768Mi
-        volumeMounts:
-        - name: config
-          mountPath: /config
-        - name: downloads-sabnzbd
-          mountPath: /downloads/sabnzbd
-        - name: downloads-transmission
-          mountPath: /downloads/transmission
-        - name: series
-          mountPath: /series
+        - name: sonarr
+          image: linuxserver/sonarr:develop-version-2.0.0.5343 # {"$imagepolicy": "flux-system:sonarr-policy"}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: Europe/Amsterdam
+          ports:
+            - containerPort: 6767
+              name: http
+              protocol: TCP
+          resources:
+            limits:
+              #cpu: 200m
+              memory: 768Mi
+            requests:
+              cpu: 10m
+              memory: 768Mi
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: downloads-sabnzbd
+              mountPath: /downloads/sabnzbd
+            - name: downloads-transmission
+              mountPath: /downloads/transmission
+            - name: series
+              mountPath: /series
       volumes:
-      - name: config
-        persistentVolumeClaim:
-          claimName: sonarr-config
-      - name: downloads-sabnzbd
-        nfs:
-          server: 192.168.178.1
-          path: /mnt/ssd1/sabnzbd/downloads/complete
-      - name: downloads-transmission
-        nfs:
-          server: 192.168.178.1
-          path: /mnt/ssd1/transmission-downloads/completed/
-      - name: series
-        nfs:
-          server: 192.168.178.167
-          path: /mnt/everything/VIDEO/SERIES
+        - name: config
+          persistentVolumeClaim:
+            claimName: sonarr-config
+        - name: downloads-sabnzbd
+          nfs:
+            server: 192.168.178.1
+            path: /mnt/ssd1/sabnzbd/downloads/complete
+        - name: downloads-transmission
+          nfs:
+            server: 192.168.178.1
+            path: /mnt/ssd1/transmission-downloads/completed/
+        - name: series
+          nfs:
+            server: 192.168.178.167
+            path: /mnt/everything/VIDEO/SERIES
