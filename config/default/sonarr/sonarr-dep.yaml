@@ -22,7 +22,7 @@ spec:
             value: "1"
       containers:
         - name: sonarr
-          image: linuxserver/sonarr:develop-version-2.0.0.5343 # {"$imagepolicy": "flux-system:sonarr-policy"}
+          image: linuxserver/sonarr:3.0.10 # {"$imagepolicy": "flux-system:sonarr-policy"}
           imagePullPolicy: IfNotPresent
           env:
             - name: PUID
