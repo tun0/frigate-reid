@@ -41,18 +41,24 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /config
-        - name: downloads
-          mountPath: /downloads
+        - name: downloads-sabnzbd
+          mountPath: /downloads/sabnzbd
+        - name: downloads-transmission
+          mountPath: /downloads/transmission
         - name: movies
           mountPath: /movies
       volumes:
       - name: config
         persistentVolumeClaim:
           claimName: radarr-config
-      - name: downloads
+      - name: downloads-sabnzbd
         nfs:
           server: 192.168.178.1
           path: /mnt/ssd1/sabnzbd/downloads/complete
+      - name: downloads-transmission
+        nfs:
+          server: 192.168.178.1
+          path: /mnt/ssd1/transmission-downloads/completed/
       - name: movies
         nfs:
           server: 192.168.178.167
