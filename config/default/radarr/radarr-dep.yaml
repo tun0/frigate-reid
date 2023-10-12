@@ -16,6 +16,10 @@ spec:
       labels:
         app: radarr
     spec:
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "2"
       containers:
       - name: radarr
         image: linuxserver/radarr:develop-version-5.0.3.8127 # {"$imagepolicy": "flux-system:radarr-policy"}
