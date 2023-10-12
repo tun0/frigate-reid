@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: radarr
-        image: linuxserver/radarr:1.2.4 # {"$imagepolicy": "flux-system:radarr-policy"}
+        image: linuxserver/radarr:develop-version-5.0.3.8127 # {"$imagepolicy": "flux-system:radarr-policy"}
         imagePullPolicy: IfNotPresent
         env:
         - name: PUID
