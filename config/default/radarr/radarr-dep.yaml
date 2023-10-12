@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: radarr
+  namespace: default
+  labels:
+    app: radarr
+spec:
+  selector:
+    matchLabels:
+      app: radarr
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: radarr
+    spec:
+      containers:
+      - name: radarr
+        image: linuxserver/radarr:1.2.4 # {"$imagepolicy": "flux-system:radarr-policy"}
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: Europe/Amsterdam
+        ports:
+        - containerPort: 6767
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            #cpu: 200m
+            memory: 350Mi
+          requests:
+            cpu: 10m
+            memory: 230Mi
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: movies
+          mountPath: /movies
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: radarr-config
+      - name: movies
+        nfs:
+          server: 192.168.178.167
+          path: /mnt/everything/VIDEO/MOVIES
