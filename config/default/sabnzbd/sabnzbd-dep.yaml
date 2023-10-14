@@ -40,6 +40,8 @@ spec:
           mountPath: /config
         - name: downloads
           mountPath: /downloads
+        - name: old-app
+          mountPath: /old-app
       volumes:
       - name: config
         persistentVolumeClaim:
@@ -48,3 +50,7 @@ spec:
         nfs:
           server: 192.168.178.1
           path: /mnt/ssd1/sabnzbd/downloads/
+      - name: old-app
+        nfs:
+          server: 192.168.178.1
+          path: /mnt/ssd1/sabnzbd/
