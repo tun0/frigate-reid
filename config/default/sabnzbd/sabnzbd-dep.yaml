@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: sabnzbd
-        image: linuxserver/sabnzbd:4.0.2 # {"$imagepolicy": "flux-system:sabnzbd-policy"}
+        image: linuxserver/sabnzbd:4.1.0 # {"$imagepolicy": "flux-system:sabnzbd-policy"}
         imagePullPolicy: IfNotPresent
         env:
         - name: PUID
@@ -46,9 +46,9 @@ spec:
       - name: config
         persistentVolumeClaim:
           claimName: sabnzbd-config
-        # nfs:
-        #   server: 192.168.178.1
-        #   path: /mnt/usb2/K8S/APPS/sabnzbd/config
+          # nfs:
+          #   server: 192.168.178.1
+          #   path: /mnt/usb2/K8S/APPS/sabnzbd/config
       - name: downloads
         nfs:
           server: 192.168.178.1
@@ -57,4 +57,3 @@ spec:
         nfs:
           server: 192.168.178.1
           path: /mnt/ssd1/sabnzbd/downloads/incomplete/
-
