@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: sabnzbd
-        image: linuxserver/sabnzbd:4.0.3 # {"$imagepolicy": "flux-system:sabnzbd-policy"}
+        image: linuxserver/sabnzbd:4.1.0 # {"$imagepolicy": "flux-system:sabnzbd-policy"}
         imagePullPolicy: IfNotPresent
         env:
         - name: PUID
@@ -44,8 +44,8 @@ spec:
           mountPath: /old-app
       dnsConfig:
         options:
-          - name: ndots
-            value: "1"
+        - name: ndots
+          value: "1"
       volumes:
       - name: config
         persistentVolumeClaim:
