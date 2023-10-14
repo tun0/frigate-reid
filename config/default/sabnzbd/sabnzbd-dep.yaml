@@ -42,6 +42,10 @@ spec:
           mountPath: /downloads
         - name: old-app
           mountPath: /old-app
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
       volumes:
       - name: config
         persistentVolumeClaim:
