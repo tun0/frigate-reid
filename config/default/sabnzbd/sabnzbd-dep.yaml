@@ -40,20 +40,11 @@ spec:
           mountPath: /config
         - name: downloads
           mountPath: /downloads
-        - name: incomplete-downloads
-          mountPath: /incomplete-downloads
       volumes:
       - name: config
         persistentVolumeClaim:
           claimName: sabnzbd-config
-          # nfs:
-          #   server: 192.168.178.1
-          #   path: /mnt/usb2/K8S/APPS/sabnzbd/config
       - name: downloads
         nfs:
           server: 192.168.178.1
-          path: /mnt/ssd1/sabnzbd/downloads/complete/
-      - name: incomplete-downloads
-        nfs:
-          server: 192.168.178.1
-          path: /mnt/ssd1/sabnzbd/downloads/incomplete/
+          path: /mnt/ssd1/sabnzbd/downloads/
