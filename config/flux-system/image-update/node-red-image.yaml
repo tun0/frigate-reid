@@ -18,4 +18,4 @@ spec:
     name: node-red-image
   policy:
     semver:
-      range: ^1
+      range: ^3
