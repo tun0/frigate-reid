@@ -53,11 +53,11 @@ spec:
         persistentVolumeClaim:
           claimName: sabnzbd-config
       - name: downloads
-        persistentVolumeClaim:
-          claimName: sabnzbd-downloads-incomplete
-        # nfs:
-        #   server: 192.168.178.1
-        #   path: /mnt/ssd1/sabnzbd/downloads/
+        # persistentVolumeClaim:
+        #   claimName: sabnzbd-downloads-incomplete
+        nfs:
+          server: 192.168.178.1
+          path: /mnt/ssd1/sabnzbd/downloads/
       - name: old-app
         nfs:
           server: 192.168.178.1
