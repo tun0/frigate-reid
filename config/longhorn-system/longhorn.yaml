@@ -67,7 +67,7 @@ data:
       staleReplicaTimeout: "30"
       fromBackup: ""
       fsType: "ext4"
-      dataLocality: "strict-local"
+      dataLocality: "best-effort"
 ---
 # Source: longhorn/templates/crds.yaml
 apiVersion: apiextensions.k8s.io/v1
