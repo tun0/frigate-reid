@@ -42,8 +42,8 @@ spec:
           mountPath: /config
         - name: downloads
           mountPath: /downloads
-        - name: downloads-incomplete
-          mountPath: /downloads/incomplete
+        # - name: downloads-incomplete
+        #   mountPath: /downloads/incomplete
         - name: old-app
           mountPath: /old-app
       dnsConfig:
@@ -55,14 +55,12 @@ spec:
         persistentVolumeClaim:
           claimName: sabnzbd-config
       - name: downloads
-        # persistentVolumeClaim:
-        #   claimName: sabnzbd-downloads-incomplete
         nfs:
           server: 192.168.178.1
           path: /mnt/ssd1/sabnzbd/downloads/
-      - name: downloads-incomplete
-        persistentVolumeClaim:
-          claimName: sabnzbd-downloads-incomplete
+      # - name: downloads-incomplete
+      #   persistentVolumeClaim:
+      #     claimName: sabnzbd-downloads-incomplete
       - name: old-app
         nfs:
           server: 192.168.178.1
