@@ -1,0 +1,39 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: influxdb
+  name: influxdb
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: influxdb
+  serviceName: influxdb
+  template:
+    metadata:
+      labels:
+        app: influxdb
+    spec:
+      containers:
+      - image: influxdb:1.8.10-alpine
+        name: influxdb
+        ports:
+        - containerPort: 8086
+          name: influxdb
+        volumeMounts:
+        - mountPath: /var/lib/influxdb
+          name: influxdb-data
+  volumeClaimTemplates:
+  - metadata:
+      name: influxdb-data
+      namespace: influxdb
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+      storageClassName: longhorn
