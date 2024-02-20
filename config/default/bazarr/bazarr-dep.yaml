@@ -22,7 +22,7 @@ spec:
             value: "1"
       containers:
         - name: bazarr
-          image: linuxserver/bazarr:1.4.1 # {"$imagepolicy": "flux-system:bazarr-policy"}
+          image: linuxserver/bazarr:1.4.2 # {"$imagepolicy": "flux-system:bazarr-policy"}
           imagePullPolicy: IfNotPresent
           env:
             - name: PUID
