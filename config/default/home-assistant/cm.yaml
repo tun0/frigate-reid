@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   labels:
     app: home-assistant
-  name: home-assistant-config-root
+  name: home-assistant-config
   namespace: default
 data:
   TZ: "Europe/Amsterdam"
