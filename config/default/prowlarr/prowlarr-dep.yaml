@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: prowlarr
-        image: linuxserver/prowlarr:develop-version-1.26.0.4833 # {"$imagepolicy": "flux-system:prowlarr-policy"}
+        image: linuxserver/prowlarr:develop-version-1.26.1.4844 # {"$imagepolicy": "flux-system:prowlarr-policy"}
         imagePullPolicy: IfNotPresent
         env:
         - name: PUID
