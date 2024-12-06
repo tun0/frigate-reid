@@ -1,0 +1,61 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: esphome
+  name: esphome
+  namespace: default
+spec:
+  revisionHistoryLimit: 3
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: esphome
+  template:
+    metadata:
+      labels:
+        app: esphome
+    spec:
+      containers:
+      - name: esphome-app
+        image: esphome/esphome
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          privileged: true
+        ports:
+        - name: http
+          containerPort: 6052
+          protocol: TCP
+        resources: {}
+        livenessProbe:
+          tcpSocket:
+            port: 6052
+          initialDelaySeconds: 0
+          failureThreshold: 3
+          timeoutSeconds: 1
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: 6052
+          initialDelaySeconds: 0
+          failureThreshold: 3
+          timeoutSeconds: 1
+          periodSeconds: 10
+        startupProbe:
+          tcpSocket:
+            port: 6052
+          initialDelaySeconds: 0
+          failureThreshold: 30
+          timeoutSeconds: 1
+          periodSeconds: 5
+        volumeMounts:
+          - name: esphome-data
+            mountPath: /config
+      restartPolicy: Always
+      volumes:
+        - name: esphome-data
+          persistentVolumeClaim:
+            claimName: esphome-data
