@@ -29,6 +29,9 @@ spec:
         - name: http
           containerPort: 6052
           protocol: TCP
+        - name: api
+          containerPort: 6053
+          protocol: TCP
         resources: {}
         livenessProbe:
           tcpSocket:

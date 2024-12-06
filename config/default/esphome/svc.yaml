@@ -12,6 +12,10 @@ spec:
     targetPort: http
     protocol: TCP
     name: http
+  - port: 6053
+    targetPort: api
+    protocol: TCP
+    name: http
   selector:
     app: esphome
   type: LoadBalancer
