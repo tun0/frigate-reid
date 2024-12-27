@@ -2,6 +2,8 @@
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: node-red.local.tun0.eu
   labels:
     app: node-red
   name: node-red

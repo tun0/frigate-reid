@@ -2,6 +2,8 @@
 kind: Service
 apiVersion: v1
 metadata:
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: longhorn.local.tun0.eu
   labels:
     app.kubernetes.io/name: longhorn
     app.kubernetes.io/instance: longhorn
@@ -17,6 +19,5 @@ spec:
   - name: http
     port: 80
     targetPort: http
-    nodePort: null
   loadBalancerIP: 192.168.178.207
   externalTrafficPolicy: Local

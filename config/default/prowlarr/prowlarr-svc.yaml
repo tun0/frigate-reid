@@ -2,6 +2,8 @@
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: prowlarr.local.tun0.eu
   labels:
     app: prowlarr
   name: prowlarr

@@ -2,6 +2,8 @@
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: transmission.local.tun0.eu
   labels:
     app: transmission
   name: transmission
