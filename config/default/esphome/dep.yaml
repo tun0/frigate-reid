@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: esphome-app
-        image: esphome/esphome
+        image: esphome/esphome:2025.2.2
         imagePullPolicy: IfNotPresent
         securityContext:
           privileged: true
@@ -57,6 +57,8 @@ spec:
         volumeMounts:
           - name: esphome-data
             mountPath: /config
+      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true
       restartPolicy: Always
       volumes:
         - name: esphome-data
