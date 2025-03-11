@@ -53,7 +53,7 @@ spec:
       volumes:
       - name: config
         persistentVolumeClaim:
-          claimName: sabnzbd-config
+          claimName: sabnzbd-config-backup
       - name: downloads
         nfs:
           server: 192.168.178.1
