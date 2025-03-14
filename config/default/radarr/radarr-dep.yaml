@@ -20,6 +20,7 @@ spec:
         options:
           - name: ndots
             value: "1"
+      nodeName: saturn
       containers:
         - name: radarr
           image: linuxserver/radarr:develop-version-5.20.0.9752 # {"$imagepolicy": "flux-system:radarr-policy"}
