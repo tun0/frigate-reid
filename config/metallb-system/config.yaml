@@ -9,6 +9,15 @@ spec:
   - 192.168.178.201-192.168.178.250
 ---
 apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: second-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 192.168.178.201-192.168.178.250
+---
+apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
 metadata:
   name: layer2
@@ -16,3 +25,4 @@ metadata:
 spec:
   ipAddressPools:
   - first-pool
+  - second-pool
