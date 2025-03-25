@@ -1,0 +1,21 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: hass2.local.tun0.eu
+  labels:
+    app: home-assistant-2
+  name: home-assistant-2
+  namespace: default
+spec:
+  ports:
+  - port: 8123
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app: home-assistant-2
+  type: LoadBalancer
+  loadBalancerIP: 192.168.1.201
+  externalTrafficPolicy: Local

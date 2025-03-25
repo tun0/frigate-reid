@@ -1,0 +1,72 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: home-assistant-2
+  name: home-assistant-2
+  namespace: default
+spec:
+  revisionHistoryLimit: 3
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: home-assistant-2
+  template:
+    metadata:
+      labels:
+        app: home-assistant-2
+    spec:
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+      nodeName: pluto
+      containers:
+      - name: home-assistant-app
+        image: ghcr.io/home-assistant/home-assistant:2025.3.4
+        imagePullPolicy: IfNotPresent
+        envFrom:
+        - configMapRef:
+            name: home-assistant-config
+        ports:
+        - name: http
+          containerPort: 8123
+          protocol: TCP
+        resources: {}
+        livenessProbe:
+          tcpSocket:
+            port: 8123
+          initialDelaySeconds: 0
+          failureThreshold: 3
+          timeoutSeconds: 1
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: 8123
+          initialDelaySeconds: 0
+          failureThreshold: 3
+          timeoutSeconds: 1
+          periodSeconds: 10
+        startupProbe:
+          tcpSocket:
+            port: 8123
+          initialDelaySeconds: 0
+          failureThreshold: 30
+          timeoutSeconds: 1
+          periodSeconds: 5
+        volumeMounts:
+          - name: ha-config-root
+            mountPath: /config
+      restartPolicy: Always
+      tolerations:
+      - key: location
+        operator: Equal
+        value: kuifeend
+        effect: NoSchedule
+      volumes:
+        - name: ha-config-root
+          persistentVolumeClaim:
+            claimName: home-assistant-2-config-root
