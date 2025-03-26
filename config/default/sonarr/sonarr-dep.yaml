@@ -20,7 +20,7 @@ spec:
         options:
           - name: ndots
             value: "1"
-      nodeName: saturn
+      # nodeName: saturn
       containers:
         - name: sonarr
           image: linuxserver/sonarr:3.0.10 # {"$imagepolicy": "flux-system:sonarr-policy"}
