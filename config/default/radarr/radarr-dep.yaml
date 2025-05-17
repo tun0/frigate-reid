@@ -23,7 +23,7 @@ spec:
       # nodeName: saturn
       containers:
         - name: radarr
-          image: linuxserver/radarr:develop-version-5.23.2.9919 # {"$imagepolicy": "flux-system:radarr-policy"}
+          image: linuxserver/radarr:develop-version-5.23.3.9987 # {"$imagepolicy": "flux-system:radarr-policy"}
           imagePullPolicy: IfNotPresent
           env:
             - name: PUID
