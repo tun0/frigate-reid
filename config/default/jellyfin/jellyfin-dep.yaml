@@ -52,11 +52,11 @@ spec:
         fsGroup: 1000
       volumes:
       - name: jellyfin-config
-        hostPath:
-          path: /mnt/everything/K8S/APPS/jellyfin/config
-        # nfs:
-        #   server: 192.168.178.1
-        #   path: /mnt/usb2/K8S/APPS/jellyfin/config
+        # hostPath:
+        #   path: /mnt/everything/K8S/APPS/jellyfin/config
+        nfs:
+          server: 192.168.178.1
+          path: /mnt/usb2/K8S/APPS/jellyfin/config
       - name: media
         hostPath:
           path: /mnt/everything
