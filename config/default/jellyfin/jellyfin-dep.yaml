@@ -50,11 +50,11 @@ spec:
         runAsGroup: 1000
         fsGroup: 1000
       volumes:
-      - name: media
-        nfs:
-          server: 192.168.178.1
-          path: /mnt/
       - name: jellyfin-config
         nfs:
           server: 192.168.178.1
           path: /mnt/usb2/K8S/APPS/jellyfin/config
+      - name: media
+        nfs:
+          server: 192.168.178.167
+          path: /mnt/everything
