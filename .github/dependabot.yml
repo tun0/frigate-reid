@@ -3,5 +3,13 @@ updates:
   - package-ecosystem: "docker"
     directories:
     - "/config/**/*"
+    ignore:
+    - dependency-name: fluxcd/helm-controller
+    - dependency-name: fluxcd/image-automation-controller
+    - dependency-name: fluxcd/image-reflector-controller
+    - dependency-name: fluxcd/kustomize-controller
+    - dependency-name: fluxcd/notification-controller
+    - dependency-name: fluxcd/source-controller
+    - dependency-name: linuxserver/jackett
     schedule:
       interval: "weekly"
