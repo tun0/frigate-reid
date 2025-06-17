@@ -10,6 +10,10 @@ updates:
     - dependency-name: fluxcd/kustomize-controller
     - dependency-name: fluxcd/notification-controller
     - dependency-name: fluxcd/source-controller
+    - dependency-name: linuxserver/bazarr
     - dependency-name: linuxserver/jackett
+    - dependency-name: linuxserver/radarr
+    - dependency-name: linuxserver/sabnzbd
+    - dependency-name: linuxserver/sonarr
     schedule:
       interval: "weekly"
