@@ -61,8 +61,7 @@ spec:
         volumeMounts:
           - name: esphome-data
             mountPath: /config
-          - name: esphome-old
-            mountPath: /config-old
+
       dnsPolicy: ClusterFirstWithHostNet
       hostNetwork: true
       restartPolicy: Always
@@ -70,6 +69,4 @@ spec:
         - name: esphome-data
           persistentVolumeClaim:
             claimName: esphome-data
-        - name: esphome-old
-          persistentVolumeClaim:
-            claimName: esphome-old
+
