@@ -23,7 +23,6 @@ spec:
         options:
           - name: ndots
             value: "1"
-      nodeName: pluto
       containers:
       - name: home-assistant-app
         image: ghcr.io/home-assistant/home-assistant:2025.7.2
