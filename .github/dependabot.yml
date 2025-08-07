@@ -15,6 +15,6 @@ updates:
     - dependency-name: linuxserver/radarr
     - dependency-name: linuxserver/sabnzbd
     - dependency-name: linuxserver/sonarr
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 20
     schedule:
-      interval: "weekly"
+      interval: "daily"
