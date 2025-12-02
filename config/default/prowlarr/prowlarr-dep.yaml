@@ -39,7 +39,7 @@ spec:
         - name: config
           mountPath: /config
       - name: flaresolverr
-        image: flaresolverr/flaresolverr:v3.4.4
+        image: flaresolverr/flaresolverr:v3.4.6
         imagePullPolicy: IfNotPresent
         env:
         - name: TZ
