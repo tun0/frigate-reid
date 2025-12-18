@@ -10,10 +10,14 @@ metadata:
   namespace: default
 spec:
   ports:
-  - port: 8123
+  - port: 80
     targetPort: http
     protocol: TCP
     name: http
+  - port: 8123
+    targetPort: http
+    protocol: TCP
+    name: hass
   selector:
     app: home-assistant-2
   type: LoadBalancer
