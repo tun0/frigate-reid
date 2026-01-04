@@ -11,19 +11,19 @@ spec:
   resources:
     requests:
       storage: 10Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: sabnzbd-downloads-incomplete
-  namespace: default
-spec:
-  accessModes:
-  - ReadWriteOnce
-  storageClassName: longhorn
-  resources:
-    requests:
-      storage: 50Gi
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: sabnzbd-downloads-incomplete
+#   namespace: default
+# spec:
+#   accessModes:
+#   - ReadWriteOnce
+#   storageClassName: longhorn
+#   resources:
+#     requests:
+#       storage: 50Gi
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -37,3 +37,26 @@ spec:
   resources:
     requests:
       storage: 200Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: sabnzbd-downloads-incomplete
+spec:
+  capacity:
+    storage: 200Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /mnt/nvme01/sabnzbd/downloads/incomplete
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - mars
