@@ -60,3 +60,16 @@ spec:
           operator: In
           values:
           - mars
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sabnzbd-downloads-incomplete
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Gi
+  storageClassName: local-storage
+  volumeName: sabnzbd-downloads-incomplete
