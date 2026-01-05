@@ -19,10 +19,16 @@ spec:
       labels:
         app: home-assistant-2
     spec:
-      dnsConfig:
-        options:
-          - name: ndots
-            value: "1"
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - mars
       containers:
       - name: home-assistant-app
         image: ghcr.io/home-assistant/home-assistant:2025.12.5
@@ -61,6 +67,10 @@ spec:
             mountPath: /config
           - name: ha-config-backups
             mountPath: /config/backups
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
       restartPolicy: Always
       tolerations:
       - key: location

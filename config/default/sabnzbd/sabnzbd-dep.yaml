@@ -16,6 +16,16 @@ spec:
       labels:
         app: sabnzbd
     spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - mars
       containers:
       - name: sabnzbd
         image: linuxserver/sabnzbd:4.5.5 # {"$imagepolicy": "flux-system:sabnzbd-policy"}
