@@ -10,6 +10,10 @@ metadata:
   namespace: default
 spec:
   ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: web
   - port: 6052
     targetPort: http
     protocol: TCP
