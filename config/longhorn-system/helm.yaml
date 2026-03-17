@@ -29,3 +29,9 @@ spec:
       reclaimPolicy: Retain
       defaultClassReplicaCount: 2
       defaultDataLocality: best-effort
+    service:
+      ui:
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: longhorn.local.tun0.eu
+        loadBalancerIP: 192.168.178.207
+        type: LoadBalancer
