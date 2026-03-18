@@ -20,7 +20,7 @@ spec:
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
-        name: longhorn
+        name: metallb
       version: 1.15.3
   interval: 1h
   releaseName: metallb
