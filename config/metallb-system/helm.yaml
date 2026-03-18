@@ -21,7 +21,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: metallb
-      version: 1.15.3
+      version: 0.15.3
   interval: 1h
   releaseName: metallb
   values:
