@@ -17,5 +17,4 @@ spec:
   selector:
     app: vaultwarden
   type: LoadBalancer
-  loadBalancerIP: 192.168.178.206
   externalTrafficPolicy: Local
