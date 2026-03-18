@@ -21,7 +21,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: external-dns
-      version: 1.18.0
+      version: 1.20.0
   interval: 1h0m0s
   releaseName: external-dns
   values:
