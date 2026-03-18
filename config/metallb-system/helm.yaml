@@ -24,10 +24,3 @@ spec:
       version: 0.15.3
   interval: 1h
   releaseName: metallb
-  values:
-    configInline:
-      address-pools:
-        - name: first-pool
-          protocol: layer2
-          addresses:
-            - 192.168.178.201-192.168.178.250
