@@ -25,7 +25,7 @@ spec:
             value: "1"
       containers:
       - name: esphome-app
-        image: esphome/esphome:2026.3.1
+        image: esphome/esphome:2026.3.2
         imagePullPolicy: IfNotPresent
         securityContext:
           privileged: true
