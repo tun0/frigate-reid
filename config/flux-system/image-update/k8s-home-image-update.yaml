@@ -11,33 +11,23 @@ spec:
         branch: master
     commit:
       messageTemplate: |
-        Automated image update:{{ range $images := .Updated.Images }} {{ $images }}{{ end }}
+        Automated image update
 
-        ---
-        automation: {{ .AutomationObject }}
-        files:
-        {{- range $file, $fileresult := .Updated.Files }}
-        -
-          filename: {{ $file }}
-          objects:
-        {{- range $object, $imagerefs := $fileresult.Objects }}
-          -
-            apiVersion: {{ $object.APIVersion }}
-            kind: {{ $object.Kind }}
-            name: {{ $object.Name }}
-            namespace: {{ $object.Namespace }}
-            images:
-        {{- range $imageref := $imagerefs }}
-            -
-              shortName: {{ $imageref.String }}
-              fullName: {{ $imageref.Name }}
-              registry: {{ $imageref.Registry }}
-              repository: {{ $imageref.Repository }}
-              identifier: {{ $imageref.Identifier }}
-        {{- end -}}
-        {{- end -}}
-        {{- end }}
-        ...
+        Automation name: {{ .AutomationObject }}
+
+        Files:
+        {{ range $filename, $_ := .Changed.FileChanges -}}
+        - {{ $filename }}
+        {{ end -}}
+
+        Objects:
+        {{ range $resource, $changes := .Changed.Objects -}}
+        - {{ $resource.Kind }} {{ $resource.Name }}
+          Changes:
+        {{- range $_, $change := $changes }}
+            - {{ $change.OldValue }} -> {{ $change.NewValue }}
+        {{ end -}}
+        {{ end -}}
       author:
         email: fluxbot@tun0.nl
         name: FluxBot
