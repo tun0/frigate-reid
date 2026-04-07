@@ -11,11 +11,13 @@ spec:
   eventSources:
   - kind: GitRepository
     name: '*'
-  - kind: ImagePolicy
+  - kind: HelmRelease
     name: '*'
-  - kind: ImageRepository
+  - kind: ImagePolicy
     name: '*'
   - kind: ImageUpdateAutomation
     name: '*'
   - kind: Kustomization
+    name: '*'
+  - kind: OCIRepository
     name: '*'
