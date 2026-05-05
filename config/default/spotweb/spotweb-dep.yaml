@@ -1,0 +1,58 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spotweb
+  namespace: default
+  labels:
+    app: spotweb
+spec:
+  selector:
+    matchLabels:
+      app: spotweb
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: spotweb
+    spec:
+      containers:
+      - name: spotweb
+        image: jgeusebroek/spotweb:20260425
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: SPOTWEB_DB_TYPE
+          value: pdo_mysql
+        - name: SPOTWEB_DB_HOST
+          value: spotweb-db
+        - name: SPOTWEB_DB_NAME
+          value: spotweb
+        - name: TZ
+          value: Europe/Amsterdam
+        - name: SPOTWEB_CRON_RETRIEVE
+          value: "0 */2 * * *"
+        envFrom:
+        - secretRef:
+            name: spotweb
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            memory: 512Mi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        volumeMounts:
+        - name: config
+          mountPath: /config
+      dnsConfig:
+        options:
+        - name: ndots
+          value: "1"
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: spotweb-config
