@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: spotweb-db
+  name: mariadb-spotweb
   namespace: default
   labels:
-    app: spotweb-db
+    app: mariadb-spotweb
 spec:
   ports:
   - name: mysql
@@ -13,26 +13,26 @@ spec:
     protocol: TCP
     targetPort: 3306
   selector:
-    app: spotweb-db
+    app: mariadb-spotweb
   type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: spotweb-db
+  name: mariadb-spotweb
   namespace: default
   labels:
-    app: spotweb-db
+    app: mariadb-spotweb
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: spotweb-db
-  serviceName: spotweb-db
+      app: mariadb-spotweb
+  serviceName: mariadb-spotweb
   template:
     metadata:
       labels:
-        app: spotweb-db
+        app: mariadb-spotweb
     spec:
       affinity:
         podAffinity:

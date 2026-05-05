@@ -34,7 +34,7 @@ spec:
         - name: SPOTWEB_DB_TYPE
           value: pdo_mysql
         - name: SPOTWEB_DB_HOST
-          value: spotweb-db
+          value: mariadb-spotweb
         - name: SPOTWEB_DB_NAME
           value: spotweb
         - name: TZ
