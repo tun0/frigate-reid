@@ -17,6 +17,15 @@ spec:
       labels:
         app: spotweb
     spec:
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app: spotweb-db
+              topologyKey: kubernetes.io/hostname
       containers:
       - name: spotweb
         image: jgeusebroek/spotweb:20260425

@@ -34,6 +34,15 @@ spec:
       labels:
         app: spotweb-db
     spec:
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app: spotweb
+              topologyKey: kubernetes.io/hostname
       containers:
       - name: mariadb
         image: mariadb:11
