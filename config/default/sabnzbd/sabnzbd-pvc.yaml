@@ -75,3 +75,41 @@ spec:
       storage: 200Gi
   storageClassName: local-storage
   volumeName: sabnzbd-downloads-incomplete
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: sabnzbd-downloads-local
+  namespace: default
+spec:
+  capacity:
+    storage: 200Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /mnt/nvme01/sabnzbd/downloads
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - mars
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sabnzbd-downloads-local
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Gi
+  storageClassName: local-storage
+  volumeName: sabnzbd-downloads-local
