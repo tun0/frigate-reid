@@ -18,4 +18,4 @@ spec:
     name: sonarr-image
   policy:
     semver:
-      range: ^3
+      range: ^4
