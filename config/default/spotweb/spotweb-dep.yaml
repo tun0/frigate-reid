@@ -28,7 +28,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
       - name: spotweb
-        image: jgeusebroek/spotweb:20260425
+        image: jgeusebroek/spotweb:20260509
         imagePullPolicy: IfNotPresent
         env:
         - name: SPOTWEB_DB_TYPE
