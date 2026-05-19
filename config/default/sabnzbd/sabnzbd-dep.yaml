@@ -28,7 +28,7 @@ spec:
                 - mars
       containers:
       - name: sabnzbd
-        image: linuxserver/sabnzbd:4.5.5 # {"$imagepolicy": "flux-system:sabnzbd-policy"}
+        image: lscr.io/linuxserver/sabnzbd:5.0.3 # {"$imagepolicy": "flux-system:sabnzbd-policy"}
         imagePullPolicy: IfNotPresent
         env:
         - name: PUID
@@ -52,10 +52,10 @@ spec:
           mountPath: /config
         - name: downloads
           mountPath: /downloads
-        # - name: downloads-incomplete
-        #   mountPath: /downloads/incomplete
-        # - name: old-app
-        #   mountPath: /old-app
+          # - name: downloads-incomplete
+          #   mountPath: /downloads/incomplete
+          # - name: old-app
+          #   mountPath: /old-app
       dnsConfig:
         options:
         - name: ndots
@@ -64,10 +64,10 @@ spec:
       - name: config
         persistentVolumeClaim:
           claimName: sabnzbd-config
-      # - name: downloads
-      #   nfs:
-      #     server: 192.168.178.179
-      #     path: /mnt/ssd1/sabnzbd/downloads/
+          # - name: downloads
+          #   nfs:
+          #     server: 192.168.178.179
+          #     path: /mnt/ssd1/sabnzbd/downloads/
         # persistentVolumeClaim:
         #   claimName: sabnzbd-downloads
       # - name: downloads-incomplete
