@@ -18,7 +18,7 @@ spec:
         runAsUser: 1000
       containers:
         - name: meter-reader
-          image: ghcr.io/tun0/watermeter/reader:20260603153835
+          image: ghcr.io/tun0/watermeter/reader:20260603205011
           envFrom:
             - configMapRef:
                 name: watermeter
