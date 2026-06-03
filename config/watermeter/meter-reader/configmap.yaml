@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: watermeter
+  namespace: watermeter
+data:
+  CAM_SNAPSHOT_URL: "http://192.168.178.57/"
+  CAM_STREAM_URL:   "http://192.168.178.57:8080/"
+  READING_INTERVAL: "10"
+  STATE_FILE:       "/app/data/.meter_state.json"

@@ -1,0 +1,40 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: meter-reader
+  namespace: watermeter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: meter-reader
+  template:
+    metadata:
+      labels:
+        app: meter-reader
+    spec:
+      securityContext:
+        runAsUser: 1000
+      containers:
+        - name: meter-reader
+          image: ghcr.io/tun0/watermeter/reader:20260603153835
+          envFrom:
+            - configMapRef:
+                name: watermeter
+            - secretRef:
+                name: watermeter
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 512Mi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: meter-data
