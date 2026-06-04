@@ -1,0 +1,23 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: meter-reader-image
+  namespace: flux-system
+spec:
+  image: ghcr.io/tun0/watermeter/reader
+  interval: 1h0m0s
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: meter-reader-policy
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: meter-reader-image
+  filterTags:
+    pattern: '^\d{14}$'
+  policy:
+    alphabetical:
+      order: asc
