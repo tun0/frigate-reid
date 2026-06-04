@@ -1,4 +1,3 @@
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,7 +18,7 @@ spec:
         runAsUser: 1000
       containers:
         - name: meter-reader
-          image: ghcr.io/tun0/watermeter/reader:20260603205011 # {"$imagepolicy": "flux-system:meter-reader-policy"}
+          image: ghcr.io/tun0/watermeter/reader:20260604053207 # {"$imagepolicy": "flux-system:meter-reader-policy"}
           envFrom:
             - configMapRef:
                 name: watermeter
