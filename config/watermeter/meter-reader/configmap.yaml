@@ -6,5 +6,6 @@ metadata:
 data:
   CAM_SNAPSHOT_URL: "http://192.168.178.57/"
   CAM_STREAM_URL:   "http://192.168.178.57:8080/"
+  INITIAL_VALUE:    "297.1110"
   READING_INTERVAL: "10"
   STATE_FILE:       "/app/data/.meter_state.json"
