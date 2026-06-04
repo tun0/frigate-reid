@@ -18,7 +18,7 @@ spec:
         runAsUser: 1000
       containers:
         - name: meter-reader
-          image: ghcr.io/tun0/watermeter/reader:20260604075255 # {"$imagepolicy": "flux-system:meter-reader-policy"}
+          image: ghcr.io/tun0/watermeter/reader:20260604183634 # {"$imagepolicy": "flux-system:meter-reader-policy"}
           envFrom:
             - configMapRef:
                 name: watermeter
