@@ -26,7 +26,7 @@ spec:
   type: github
   events:
     - ping
-    - package
+    - registry_package
   secretRef:
     name: flux-webhook-token
   resources:
