@@ -1,0 +1,23 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: spotweb-image
+  namespace: flux-system
+spec:
+  image: jgeusebroek/spotweb
+  interval: 1h0m0s
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: spotweb-policy
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: spotweb-image
+  filterTags:
+    pattern: '^\d{8}$'
+  policy:
+    alphabetical:
+      order: asc

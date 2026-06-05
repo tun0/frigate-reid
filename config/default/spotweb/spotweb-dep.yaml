@@ -28,7 +28,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
       - name: spotweb
-        image: jgeusebroek/spotweb:20260523
+        image: jgeusebroek/spotweb:20260523 # {"$imagepolicy": "flux-system:spotweb-policy"}
         imagePullPolicy: IfNotPresent
         env:
         - name: SPOTWEB_DB_TYPE
