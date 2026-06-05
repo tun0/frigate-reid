@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudflared-config
+  namespace: flux-system
+data:
+  config.yaml: |
+    tunnel: ab85cccb-a1a0-4d87-8372-e167b64d0d38
+    credentials-file: /etc/cloudflared/creds/credentials.json
+    no-autoupdate: true
+    ingress:
+      - hostname: flux-webhook.tun0.eu
+        service: http://webhook-receiver.flux-system.svc.cluster.local:80
+      - service: http_status:404
