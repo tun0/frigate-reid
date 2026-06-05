@@ -1,4 +1,3 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -28,7 +27,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
       - name: spotweb
-        image: jgeusebroek/spotweb:20260523 # {"$imagepolicy": "flux-system:spotweb-policy"}
+        image: jgeusebroek/spotweb:20260530 # {"$imagepolicy": "flux-system:spotweb-policy"}
         imagePullPolicy: IfNotPresent
         env:
         - name: SPOTWEB_DB_TYPE
