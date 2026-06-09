@@ -78,9 +78,6 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /config
-        - name: config-file
-          mountPath: /config/config.yml
-          subPath: config.yml
         - name: media
           mountPath: /media/frigate
         - name: cache
@@ -94,9 +91,6 @@ spec:
       - name: config
         persistentVolumeClaim:
           claimName: frigate-config
-      - name: config-file
-        configMap:
-          name: frigate-config
       - name: media
         persistentVolumeClaim:
           claimName: frigate-media
