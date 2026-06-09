@@ -1,0 +1,23 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: frigate-image
+  namespace: flux-system
+spec:
+  image: ghcr.io/blakeblackshear/frigate
+  interval: 1h0m0s
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: frigate-policy
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: frigate-image
+  filterTags:
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+  policy:
+    semver:
+      range: '>=0.14.0'

@@ -1,0 +1,114 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: frigate
+  name: frigate
+  namespace: frigate
+spec:
+  revisionHistoryLimit: 3
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: frigate
+  template:
+    metadata:
+      labels:
+        app: frigate
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - mars
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+      containers:
+      - name: frigate
+        image: ghcr.io/blakeblackshear/frigate:0.14.1 # {"$imagepolicy": "flux-system:frigate-policy"}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 5000
+          protocol: TCP
+        - name: rtsp
+          containerPort: 8554
+          protocol: TCP
+        resources:
+          limits:
+            memory: 4Gi
+          requests:
+            cpu: 100m
+            memory: 1Gi
+        envFrom:
+        - secretRef:
+            name: frigate-rtsp
+        securityContext:
+          privileged: true
+        livenessProbe:
+          tcpSocket:
+            port: 5000
+          initialDelaySeconds: 30
+          failureThreshold: 5
+          timeoutSeconds: 1
+          periodSeconds: 30
+        readinessProbe:
+          tcpSocket:
+            port: 5000
+          initialDelaySeconds: 30
+          failureThreshold: 3
+          timeoutSeconds: 1
+          periodSeconds: 10
+        startupProbe:
+          tcpSocket:
+            port: 5000
+          initialDelaySeconds: 0
+          failureThreshold: 30
+          timeoutSeconds: 1
+          periodSeconds: 5
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: config-file
+          mountPath: /config/config.yml
+          subPath: config.yml
+        - name: media
+          mountPath: /media/frigate
+        - name: cache
+          mountPath: /tmp/cache
+        - name: dshm
+          mountPath: /dev/shm
+        - name: dri
+          mountPath: /dev/dri
+      restartPolicy: Always
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: frigate-config
+      - name: config-file
+        configMap:
+          name: frigate-config
+      - name: media
+        persistentVolumeClaim:
+          claimName: frigate-media
+      - name: cache
+        emptyDir:
+          medium: Memory
+          sizeLimit: 1Gi
+      - name: dshm
+        emptyDir:
+          medium: Memory
+          sizeLimit: 64Mi
+      - name: dri
+        hostPath:
+          path: /dev/dri
