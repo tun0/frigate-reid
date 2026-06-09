@@ -1,4 +1,3 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,7 +18,7 @@ spec:
         runAsUser: 65532
       containers:
         - name: cloudflared
-          image: cloudflare/cloudflared:2026.5.2 # {"$imagepolicy": "flux-system:cloudflared-policy"}
+          image: cloudflare/cloudflared:2026.6.0 # {"$imagepolicy": "flux-system:cloudflared-policy"}
           args:
             - tunnel
             - --config
