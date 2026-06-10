@@ -1,0 +1,23 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: ha-mcp-image
+  namespace: flux-system
+spec:
+  image: ghcr.io/homeassistant-ai/ha-mcp
+  interval: 1h0m0s
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: ha-mcp-policy
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: ha-mcp-image
+  filterTags:
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+  policy:
+    semver:
+      range: '>=7.6.0'

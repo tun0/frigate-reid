@@ -1,0 +1,20 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: ha-mcp.local.tun0.eu
+  labels:
+    app: ha-mcp
+  name: ha-mcp
+  namespace: homeassistant
+spec:
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app: ha-mcp
+  type: LoadBalancer
+  externalTrafficPolicy: Local

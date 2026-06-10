@@ -1,0 +1,57 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ha-mcp
+  name: ha-mcp
+  namespace: homeassistant
+spec:
+  revisionHistoryLimit: 3
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ha-mcp
+  template:
+    metadata:
+      labels:
+        app: ha-mcp
+    spec:
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+      containers:
+      - name: ha-mcp
+        image: ghcr.io/homeassistant-ai/ha-mcp:7.6.0 # {"$imagepolicy": "flux-system:ha-mcp-policy"}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8086
+          protocol: TCP
+        env:
+        - name: HOMEASSISTANT_URL
+          value: http://home-assistant-2.default.svc.cluster.local
+        - name: HOMEASSISTANT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: ha-mcp
+              key: HOMEASSISTANT_TOKEN
+        - name: ENABLE_TOOL_SEARCH
+          value: "true"
+        resources:
+          limits:
+            memory: 512Mi
+          requests:
+            cpu: 10m
+            memory: 128Mi
+        livenessProbe:
+          tcpSocket:
+            port: 8086
+          initialDelaySeconds: 15
+          failureThreshold: 3
+          timeoutSeconds: 1
+          periodSeconds: 30
+      restartPolicy: Always
