@@ -27,7 +27,7 @@ spec:
       - name: ha-mcp
         image: ghcr.io/homeassistant-ai/ha-mcp:7.6.0 # {"$imagepolicy": "flux-system:ha-mcp-policy"}
         imagePullPolicy: IfNotPresent
-        command: ["uv", "run", "fastmcp", "run", "fastmcp-http.json"]
+        command: ["/app/.venv/bin/ha-mcp-web"]
         ports:
         - name: http
           containerPort: 8086
