@@ -1,0 +1,54 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mosquitto
+  name: mosquitto
+  namespace: mqtt
+spec:
+  revisionHistoryLimit: 3
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: mosquitto
+  template:
+    metadata:
+      labels:
+        app: mosquitto
+    spec:
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+      containers:
+      - name: mosquitto
+        image: eclipse-mosquitto:2.0.21 # {"$imagepolicy": "flux-system:mosquitto-policy"}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: mqtt
+          containerPort: 1883
+          protocol: TCP
+        resources:
+          limits:
+            memory: 64Mi
+          requests:
+            cpu: 5m
+            memory: 16Mi
+        livenessProbe:
+          tcpSocket:
+            port: 1883
+          initialDelaySeconds: 5
+          failureThreshold: 3
+          timeoutSeconds: 1
+          periodSeconds: 30
+        volumeMounts:
+        - name: config
+          mountPath: /mosquitto/config
+      restartPolicy: Always
+      volumes:
+      - name: config
+        configMap:
+          name: mosquitto-config
