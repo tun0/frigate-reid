@@ -28,7 +28,7 @@ spec:
                 - mars
       containers:
       - name: sabnzbd
-        image: lscr.io/linuxserver/sabnzbd:5.0.3 # {"$imagepolicy": "flux-system:sabnzbd-policy"}
+        image: lscr.io/linuxserver/sabnzbd:5.0.4 # {"$imagepolicy": "flux-system:sabnzbd-policy"}
         imagePullPolicy: IfNotPresent
         env:
         - name: PUID
