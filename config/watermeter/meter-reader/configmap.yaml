@@ -4,9 +4,9 @@ metadata:
   name: watermeter
   namespace: watermeter
 data:
-  CAM_SNAPSHOT_URL: "http://192.168.178.57/"
-  CAM_STREAM_URL:   "http://192.168.178.57:8080/"
-  INITIAL_VALUE:    "297.1110"
+  CAM_SNAPSHOT_URL: "http://192.168.178.57:8080/"
+  CAM_STREAM_URL:   "http://192.168.178.57:8081/"
+  INITIAL_VALUE:    "301.252"
   FLOW_MAX_AGE:     "300"
   READING_INTERVAL: "10"
   STATE_FILE:       "/app/data/.meter_state.json"
