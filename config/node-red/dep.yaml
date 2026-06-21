@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: node-red
-  namespace: default
+  namespace: node-red
   labels:
     app: node-red
 spec:
@@ -14,6 +14,10 @@ spec:
       labels:
         app: node-red
     spec:
+      dnsConfig:
+        options:
+        - name: ndots
+          value: "1"
       containers:
       - name: node-red
         image: nodered/node-red:4.1.11 # {"$imagepolicy": "flux-system:node-red-policy"}
@@ -29,10 +33,6 @@ spec:
           subPath: usb2/K8S/APPS/node-red/data/
         - name: nfs-mercury-mnt
           mountPath: /mnt
-      dnsConfig:
-        options:
-        - name: ndots
-          value: "1"
       volumes:
       - name: nfs-mercury-mnt
         nfs:
