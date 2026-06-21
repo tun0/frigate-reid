@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frigate-reid
+  namespace: frigate
+  labels:
+    app: frigate-reid
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frigate-reid
+  template:
+    metadata:
+      labels:
+        app: frigate-reid
+    spec:
+      dnsConfig:
+        options:
+        - name: ndots
+          value: "1"
+      containers:
+      - name: frigate-reid
+        image: ghcr.io/tun0/frigate-reid/service:20260621142306 # {"$imagepolicy": "flux-system:frigate-reid-policy"}
+        imagePullPolicy: Always
+        env:
+        - name: MQTT_HOST
+          value: mosquitto.mqtt.svc.cluster.local
+        - name: FRIGATE_API
+          value: http://frigate:5000
+        - name: SIMILARITY_THRESHOLD
+          value: "0.80"
+        - name: EMBEDDING_TTL
+          value: "60"
+        - name: TARGET_ZONES
+          value: outdoor,garden,poortdeur
+        - name: TARGET_LABELS
+          value: person,car,dog,cat
+        resources:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+          limits:
+            memory: 1Gi
+      restartPolicy: Always

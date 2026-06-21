@@ -1,0 +1,20 @@
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: frigate-reid-image
+  namespace: flux-system
+spec:
+  image: ghcr.io/tun0/frigate-reid/service
+  interval: 1h0m0s
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: frigate-reid-policy
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: frigate-reid-image
+  policy:
+    numerical:
+      order: asc
