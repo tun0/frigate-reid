@@ -26,6 +26,8 @@ spec:
         env:
         - name: MQTT_HOST
           value: mosquitto.mqtt.svc.cluster.local
+        - name: MQTT_PORT
+          value: "1883"
         - name: FRIGATE_API
           value: http://frigate:5000
         - name: SIMILARITY_THRESHOLD
