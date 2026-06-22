@@ -10,10 +10,14 @@ Deduplication logic:
   - On each zone-entry event, fetch the bounding-box crop from the Frigate
     snapshot API and compute a 576-dim MobileNetV3 feature vector.
   - Compare cosine similarity against all embeddings stored in the last
-    EMBEDDING_TTL seconds (default 5 min).
+    EMBEDDING_TTL seconds.
   - If similarity >= SIMILARITY_THRESHOLD for any stored embedding → same
     person/object already notified → drop.
   - Otherwise → new detection → store embedding + forward event.
+
+If SNAPSHOT_DIR is set, every evaluated crop is saved there for later
+training use, labelled new or dup with similarity score on dups:
+  {SNAPSHOT_DIR}/{YYYYMMDD}/{label}/{camera}_{HHMMSS_ffffff}_{id[:8]}_{new|dup[_sim0.92]}.jpg
 
 Upgrade path: replace the MobileNetV3 extractor with an OSNet model from
 torchreid for better cross-camera accuracy once the simple model is validated.
@@ -24,6 +28,7 @@ import logging
 import os
 import time
 from collections import defaultdict
+from datetime import datetime
 from io import BytesIO
 from threading import Lock
 
@@ -48,6 +53,7 @@ SIMILARITY_THRESHOLD = float(os.environ["SIMILARITY_THRESHOLD"])
 EMBEDDING_TTL = int(os.environ["EMBEDDING_TTL"])
 TARGET_ZONES = set(os.environ["TARGET_ZONES"].split(","))
 TARGET_LABELS = set(os.environ["TARGET_LABELS"].split(","))
+SNAPSHOT_DIR: str | None = os.environ.get("SNAPSHOT_DIR") or None
 
 INPUT_TOPIC = "frigate/events"
 OUTPUT_TOPIC = "frigate/events/filtered"
@@ -83,18 +89,36 @@ class EmbeddingStore:
         self._store: dict[str, list[tuple[float, np.ndarray]]] = defaultdict(list)
         self._lock = Lock()
 
-    def is_duplicate(self, label: str, emb: np.ndarray, threshold: float) -> bool:
+    def is_duplicate(self, label: str, emb: np.ndarray, threshold: float) -> tuple[bool, float]:
+        """Return (is_duplicate, max_similarity). Adds emb to store only when not a duplicate."""
         now = time.monotonic()
         with self._lock:
-            # Evict expired entries
             self._store[label] = [
                 (ts, e) for ts, e in self._store[label] if now - ts < self._ttl
             ]
+            max_sim = 0.0
             for _, stored in self._store[label]:
-                if float(np.dot(emb, stored)) >= threshold:
-                    return True
+                sim = float(np.dot(emb, stored))
+                if sim > max_sim:
+                    max_sim = sim
+                if sim >= threshold:
+                    return True, max_sim
             self._store[label].append((now, emb))
-        return False
+        return False, max_sim
+
+
+def save_snapshot(img: Image.Image, camera: str, label: str, event_id: str, status: str, similarity: float) -> None:
+    if not SNAPSHOT_DIR:
+        return
+    now = datetime.now()
+    dest = os.path.join(SNAPSHOT_DIR, now.strftime("%Y%m%d"), label)
+    os.makedirs(dest, exist_ok=True)
+    sim_suffix = f"_sim{similarity:.2f}" if status == "dup" else ""
+    filename = f"{camera}_{now.strftime('%H%M%S_%f')}_{event_id[:8]}_{status}{sim_suffix}.jpg"
+    try:
+        img.save(os.path.join(dest, filename), "JPEG", quality=90)
+    except Exception as exc:
+        log.warning("Failed to save snapshot %s: %s", filename, exc)
 
 
 def fetch_crop(event_id: str) -> Image.Image | None:
@@ -147,10 +171,14 @@ def make_handler(model: torch.nn.Module, store: EmbeddingStore, client: mqtt.Cli
             return
 
         emb = compute_embedding(model, img)
-        if store.is_duplicate(label, emb, SIMILARITY_THRESHOLD):
-            log.info("DUPLICATE              %s/%s/%s", camera, label, event_id)
+        is_dup, similarity = store.is_duplicate(label, emb, SIMILARITY_THRESHOLD)
+
+        if is_dup:
+            log.info("DUPLICATE (sim=%.2f) %s/%s/%s", similarity, camera, label, event_id)
+            save_snapshot(img, camera, label, event_id, "dup", similarity)
         else:
-            log.info("NEW → forwarded        %s/%s/%s", camera, label, event_id)
+            log.info("NEW → forwarded      %s/%s/%s", camera, label, event_id)
+            save_snapshot(img, camera, label, event_id, "new", similarity)
             client.publish(OUTPUT_TOPIC, msg.payload, qos=0, retain=False)
 
     return on_message
@@ -160,6 +188,8 @@ def main() -> None:
     log.info("Loading re-ID model…")
     model = load_model()
     log.info("Model ready (MobileNetV3-Small, 576-dim features).")
+    if SNAPSHOT_DIR:
+        log.info("Snapshots → %s", SNAPSHOT_DIR)
 
     store = EmbeddingStore(ttl=EMBEDDING_TTL)
 
