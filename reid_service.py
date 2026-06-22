@@ -45,11 +45,14 @@ from datetime import datetime
 from io import BytesIO
 from threading import Lock
 
+import torch
 import numpy as np
 import paho.mqtt.client as mqtt
 import requests
 from PIL import Image
 from torchreid.utils import FeatureExtractor
+
+torch.backends.nnpack.enabled = False
 
 logging.basicConfig(
     level=logging.INFO,
