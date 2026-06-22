@@ -12,12 +12,20 @@ RUN pip install --no-cache-dir \
     torch==2.12.1+cpu torchvision==0.27.1+cpu \
     --index-url https://download.pytorch.org/whl/cpu
 
+# gdown is needed by torchreid's hub loader to fetch weights from Google Drive
+RUN pip install --no-cache-dir gdown
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Pre-download MobileNetV3-Small weights into the image so the container
-# starts immediately without a network fetch on first run.
-RUN python -c "import torchvision.models as m; m.mobilenet_v3_small(weights=m.MobileNet_V3_Small_Weights.DEFAULT)"
+# TORCH_HOME controls where torch.hub caches downloaded repos and weights.
+# Setting it to a fixed path inside the image ensures the pre-download below
+# is found at the same location when the container starts.
+ENV TORCH_HOME=/app/torch_cache
+
+# Pre-download OSNet x0.25 (torchreid hub) so the container starts without
+# a network fetch. Weights are ~4 MB; the torchreid repo clone is ~15 MB.
+RUN python -c "import torch; torch.hub.load('KaiyangZhou/deep-person-reid', 'osnet_x0_25', pretrained=True, verbose=False); print('OSNet x0.25 weights cached.')"
 
 COPY reid_service.py .
 

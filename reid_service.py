@@ -8,7 +8,7 @@ frigate/events/filtered. The HA automation listens to the filtered topic.
 
 Deduplication logic:
   - On each zone-entry event, fetch the bounding-box crop from the Frigate
-    snapshot API and compute a 576-dim MobileNetV3 feature vector.
+    snapshot API and compute a 512-dim OSNet x0.25 feature vector.
   - Compare cosine similarity against all embeddings stored in the last
     EMBEDDING_TTL seconds.
   - If best similarity >= SIMILARITY_THRESHOLD → same person/object already
@@ -32,8 +32,8 @@ Three training scenarios, and which snapshots support each:
 Dup sidecars include matched_event_id linking back to the new image they
 were compared against — enables side-by-side review for re-ID FP labeling.
 
-Upgrade path: replace the MobileNetV3 extractor with an OSNet model from
-torchreid for better cross-camera accuracy once the simple model is validated.
+Upgrade path: fine-tune OSNet on domain-specific data collected via Label
+Studio (same-person / different-person pair labels from the snapshot archive).
 """
 
 import json
@@ -49,7 +49,6 @@ import numpy as np
 import paho.mqtt.client as mqtt
 import requests
 import torch
-import torchvision.models as models
 import torchvision.transforms as T
 from PIL import Image
 
@@ -79,8 +78,15 @@ TRANSFORM = T.Compose([
 
 
 def load_model() -> torch.nn.Module:
-    m = models.mobilenet_v3_small(weights=models.MobileNet_V3_Small_Weights.DEFAULT)
-    m.classifier = torch.nn.Identity()  # 576-dim feature vector instead of class logits
+    # OSNet x0.25: designed for person re-ID, 512-dim features, fast on CPU.
+    # Loaded via torch.hub so we avoid installing the full torchreid package;
+    # weights are pre-baked into the Docker image (see Dockerfile).
+    m = torch.hub.load(
+        'KaiyangZhou/deep-person-reid',
+        'osnet_x0_25',
+        pretrained=True,
+        verbose=False,
+    )
     m.eval()
     return m
 
@@ -234,7 +240,7 @@ def make_handler(model: torch.nn.Module, store: EmbeddingStore, client: mqtt.Cli
 def main() -> None:
     log.info("Loading re-ID model…")
     model = load_model()
-    log.info("Model ready (MobileNetV3-Small, 576-dim features).")
+    log.info("Model ready (OSNet x0.25, 512-dim re-ID features).")
     if SNAPSHOT_DIR:
         log.info("Snapshots → %s", SNAPSHOT_DIR)
 
