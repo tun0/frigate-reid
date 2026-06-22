@@ -18,5 +18,5 @@ spec:
   filterTags:
     pattern: '^\d{14}$'
   policy:
-    alphabetical:
+    numerical:
       order: asc
