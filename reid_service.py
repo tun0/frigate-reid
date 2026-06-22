@@ -11,13 +11,26 @@ Deduplication logic:
     snapshot API and compute a 576-dim MobileNetV3 feature vector.
   - Compare cosine similarity against all embeddings stored in the last
     EMBEDDING_TTL seconds.
-  - If similarity >= SIMILARITY_THRESHOLD for any stored embedding → same
-    person/object already notified → drop.
+  - If best similarity >= SIMILARITY_THRESHOLD → same person/object already
+    notified → drop.
   - Otherwise → new detection → store embedding + forward event.
 
 If SNAPSHOT_DIR is set, every evaluated crop is saved there for later
-training use, labelled new or dup with similarity score on dups:
-  {SNAPSHOT_DIR}/{YYYYMMDD}/{label}/{camera}_{HHMMSS_ffffff}_{id[:8]}_{new|dup[_sim0.92]}.jpg
+training use alongside a JSON sidecar with full metadata:
+  {SNAPSHOT_DIR}/{YYYYMMDD}/{label}/{camera}_{HHMMSS_ffffff}_{id[:8]}_{new|dup}.jpg
+  {SNAPSHOT_DIR}/{YYYYMMDD}/{label}/{camera}_{HHMMSS_ffffff}_{id[:8]}_{new|dup}.json
+
+Three training scenarios, and which snapshots support each:
+  - Detection FP  (shirt detected as person by Frigate model): ALL snapshots —
+    a dup-classified image is still a detection FP if the underlying detection
+    is wrong; status only tells you what the re-ID service decided.
+  - Re-ID FP dup  (different people suppressed as duplicate): DUP snapshots —
+    compare with matched_event_id image to confirm they are different people.
+  - Re-ID FN dup  (same person fires twice, both as "new"): NEW snapshots —
+    look for pairs of new images in the same window that depict the same person.
+
+Dup sidecars include matched_event_id linking back to the new image they
+were compared against — enables side-by-side review for re-ID FP labeling.
 
 Upgrade path: replace the MobileNetV3 extractor with an OSNet model from
 torchreid for better cross-camera accuracy once the simple model is validated.
@@ -85,40 +98,71 @@ class EmbeddingStore:
 
     def __init__(self, ttl: int) -> None:
         self._ttl = ttl
-        # label → list of (timestamp, embedding)
-        self._store: dict[str, list[tuple[float, np.ndarray]]] = defaultdict(list)
+        # label → list of (monotonic_timestamp, embedding, event_id)
+        self._store: dict[str, list[tuple[float, np.ndarray, str]]] = defaultdict(list)
         self._lock = Lock()
 
-    def is_duplicate(self, label: str, emb: np.ndarray, threshold: float) -> tuple[bool, float]:
-        """Return (is_duplicate, max_similarity). Adds emb to store only when not a duplicate."""
+    def check(self, label: str, emb: np.ndarray, event_id: str, threshold: float) -> tuple[bool, float, str | None]:
+        """
+        Return (is_duplicate, best_similarity, matched_event_id).
+
+        Finds the stored embedding with the highest cosine similarity.
+        If best_similarity >= threshold: duplicate — do NOT store, return matched_event_id.
+        Otherwise: new — store embedding, return (False, best_similarity, None).
+        """
         now = time.monotonic()
         with self._lock:
             self._store[label] = [
-                (ts, e) for ts, e in self._store[label] if now - ts < self._ttl
+                (ts, e, eid) for ts, e, eid in self._store[label] if now - ts < self._ttl
             ]
-            max_sim = 0.0
-            for _, stored in self._store[label]:
+            best_sim, best_id = 0.0, None
+            for _, stored, stored_eid in self._store[label]:
                 sim = float(np.dot(emb, stored))
-                if sim > max_sim:
-                    max_sim = sim
-                if sim >= threshold:
-                    return True, max_sim
-            self._store[label].append((now, emb))
-        return False, max_sim
+                if sim > best_sim:
+                    best_sim, best_id = sim, stored_eid
+            if best_sim >= threshold:
+                return True, best_sim, best_id
+            self._store[label].append((now, emb, event_id))
+        return False, best_sim, None
 
 
-def save_snapshot(img: Image.Image, camera: str, label: str, event_id: str, status: str, similarity: float) -> None:
+def save_snapshot(
+    img: Image.Image,
+    camera: str,
+    label: str,
+    event_id: str,
+    zones: list[str],
+    status: str,
+    similarity: float,
+    matched_event_id: str | None,
+) -> None:
     if not SNAPSHOT_DIR:
         return
     now = datetime.now()
     dest = os.path.join(SNAPSHOT_DIR, now.strftime("%Y%m%d"), label)
     os.makedirs(dest, exist_ok=True)
-    sim_suffix = f"_sim{similarity:.2f}" if status == "dup" else ""
-    filename = f"{camera}_{now.strftime('%H%M%S_%f')}_{event_id[:8]}_{status}{sim_suffix}.jpg"
+
+    stem = f"{camera}_{now.strftime('%H%M%S_%f')}_{event_id[:8]}_{status}"
+
+    meta: dict = {
+        "event_id": event_id,
+        "camera": camera,
+        "label": label,
+        "timestamp": now.isoformat(),
+        "zones": zones,
+        "status": status,
+        "similarity": round(similarity, 4),
+        "image": f"{stem}.jpg",
+    }
+    if status == "dup" and matched_event_id:
+        meta["matched_event_id"] = matched_event_id
+
     try:
-        img.save(os.path.join(dest, filename), "JPEG", quality=90)
+        img.save(os.path.join(dest, f"{stem}.jpg"), "JPEG", quality=90)
+        with open(os.path.join(dest, f"{stem}.json"), "w") as f:
+            json.dump(meta, f, indent=2)
     except Exception as exc:
-        log.warning("Failed to save snapshot %s: %s", filename, exc)
+        log.warning("Failed to save snapshot %s: %s", stem, exc)
 
 
 def fetch_crop(event_id: str) -> Image.Image | None:
@@ -137,15 +181,17 @@ def fetch_crop(event_id: str) -> Image.Image | None:
     return None
 
 
-def is_zone_entry(payload: dict) -> bool:
+def is_zone_entry(payload: dict) -> tuple[bool, list[str]]:
+    """Return (is_zone_entry, new_target_zones)."""
     if payload.get("type") != "update":
-        return False
+        return False, []
     after = payload.get("after", {})
     if after.get("label") not in TARGET_LABELS:
-        return False
+        return False, []
     before_zones = set((payload.get("before") or {}).get("entered_zones") or [])
     after_zones = set(after.get("entered_zones") or [])
-    return bool((after_zones - before_zones) & TARGET_ZONES)
+    new_zones = list((after_zones - before_zones) & TARGET_ZONES)
+    return bool(new_zones), new_zones
 
 
 def make_handler(model: torch.nn.Module, store: EmbeddingStore, client: mqtt.Client):
@@ -155,7 +201,8 @@ def make_handler(model: torch.nn.Module, store: EmbeddingStore, client: mqtt.Cli
         except (json.JSONDecodeError, UnicodeDecodeError):
             return
 
-        if not is_zone_entry(payload):
+        entered, new_zones = is_zone_entry(payload)
+        if not entered:
             return
 
         after = payload["after"]
@@ -171,14 +218,14 @@ def make_handler(model: torch.nn.Module, store: EmbeddingStore, client: mqtt.Cli
             return
 
         emb = compute_embedding(model, img)
-        is_dup, similarity = store.is_duplicate(label, emb, SIMILARITY_THRESHOLD)
+        is_dup, similarity, matched_id = store.check(label, emb, event_id, SIMILARITY_THRESHOLD)
 
         if is_dup:
-            log.info("DUPLICATE (sim=%.2f) %s/%s/%s", similarity, camera, label, event_id)
-            save_snapshot(img, camera, label, event_id, "dup", similarity)
+            log.info("DUPLICATE (sim=%.2f) %s/%s/%s → matched %s", similarity, camera, label, event_id, matched_id)
+            save_snapshot(img, camera, label, event_id, new_zones, "dup", similarity, matched_id)
         else:
             log.info("NEW → forwarded      %s/%s/%s", camera, label, event_id)
-            save_snapshot(img, camera, label, event_id, "new", similarity)
+            save_snapshot(img, camera, label, event_id, new_zones, "new", similarity, None)
             client.publish(OUTPUT_TOPIC, msg.payload, qos=0, retain=False)
 
     return on_message
