@@ -17,7 +17,7 @@ RUN pip install --no-cache-dir \
 # Install its required inference deps first, then torchreid itself with
 # --no-deps to skip heavy extras (matplotlib, tensorboard, scipy, h5py)
 # that are only needed for training, not inference.
-RUN pip install --no-cache-dir gdown six h5py scipy imageio opencv-python-headless
+RUN pip install --no-cache-dir Cython gdown six h5py scipy imageio opencv-python-headless
 RUN pip install --no-cache-dir --no-deps \
     git+https://github.com/KaiyangZhou/deep-person-reid.git
 
