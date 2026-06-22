@@ -46,11 +46,12 @@ from io import BytesIO
 from threading import Lock
 
 import torch
+import torchvision.transforms as T
 import numpy as np
 import paho.mqtt.client as mqtt
 import requests
 from PIL import Image
-from torchreid.utils import FeatureExtractor
+from osnet import osnet_x0_25, init_pretrained_weights
 
 torch.backends.nnpack.enabled = False
 
@@ -72,18 +73,26 @@ SNAPSHOT_DIR: str | None = os.environ.get("SNAPSHOT_DIR") or None
 INPUT_TOPIC = "frigate/events"
 OUTPUT_TOPIC = "frigate/events/filtered"
 
-def load_model() -> FeatureExtractor:
+TRANSFORM = T.Compose([
+    T.Resize((256, 128)),
+    T.ToTensor(),
+    T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+])
+
+
+def load_model() -> torch.nn.Module:
     # OSNet x0.25: purpose-built for person re-ID, 512-dim embeddings.
-    # Uses torchreid's FeatureExtractor which handles preprocessing internally.
-    return FeatureExtractor(
-        model_name='osnet_x0_25',
-        device='cpu',
-        verbose=False,
-    )
+    # In eval mode forward() returns the 512-dim feature vector directly.
+    m = osnet_x0_25(num_classes=1000, pretrained=False)
+    init_pretrained_weights(m, 'osnet_x0_25')
+    m.eval()
+    return m
 
 
-def compute_embedding(extractor: FeatureExtractor, img: Image.Image) -> np.ndarray:
-    feat = np.asarray(extractor([img.convert("RGB")])[0])  # (512,)
+def compute_embedding(model: torch.nn.Module, img: Image.Image) -> np.ndarray:
+    tensor = TRANSFORM(img.convert("RGB")).unsqueeze(0)
+    with torch.no_grad():
+        feat = model(tensor).squeeze().numpy()
     norm = np.linalg.norm(feat)
     return feat / norm if norm > 0 else feat
 
@@ -189,7 +198,7 @@ def is_zone_entry(payload: dict) -> tuple[bool, list[str]]:
     return bool(new_zones), new_zones
 
 
-def make_handler(model: FeatureExtractor, store: EmbeddingStore, client: mqtt.Client):
+def make_handler(model: torch.nn.Module, store: EmbeddingStore, client: mqtt.Client):
     def on_message(_client, _userdata, msg: mqtt.MQTTMessage) -> None:
         try:
             payload = json.loads(msg.payload.decode())
