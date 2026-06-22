@@ -45,7 +45,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
       - name: mariadb
-        image: mariadb:11
+        image: mariadb:12
         imagePullPolicy: IfNotPresent
         env:
         - name: MYSQL_DATABASE
