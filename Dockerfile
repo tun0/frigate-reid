@@ -25,7 +25,9 @@ ENV TORCH_HOME=/app/torch_cache
 
 # Pre-download OSNet x0.25 (torchreid hub) so the container starts without
 # a network fetch. Weights are ~4 MB; the torchreid repo clone is ~15 MB.
-RUN python -c "import torch; torch.hub.load('KaiyangZhou/deep-person-reid', 'osnet_x0_25', pretrained=True, verbose=False); print('OSNet x0.25 weights cached.')"
+# Patch builtins.input before the hub load: gdown calls input() to confirm
+# Google Drive large-file downloads, which causes EOFError in non-TTY builds.
+RUN python -c "import builtins; builtins.input = lambda *a: ''; import torch; torch.hub.load('KaiyangZhou/deep-person-reid', 'osnet_x0_25', pretrained=True, verbose=False); print('OSNet x0.25 weights cached.')"
 
 COPY reid_service.py .
 
