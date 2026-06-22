@@ -86,6 +86,7 @@ def load_model() -> torch.nn.Module:
         'osnet_x0_25',
         pretrained=True,
         verbose=False,
+        trust_repo=True,
     )
     m.eval()
     return m
