@@ -38,10 +38,19 @@ spec:
           value: outdoor,garden,poortdeur
         - name: TARGET_LABELS
           value: person,car,dog,cat
+        - name: SNAPSHOT_DIR
+          value: /snapshots
         resources:
           requests:
             cpu: 100m
             memory: 512Mi
           limits:
             memory: 1Gi
+        volumeMounts:
+        - name: snapshots
+          mountPath: /snapshots
+      volumes:
+      - name: snapshots
+        persistentVolumeClaim:
+          claimName: frigate-reid-snapshots
       restartPolicy: Always
