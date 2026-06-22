@@ -23,7 +23,7 @@ spec:
           value: "1"
       containers:
       - name: frigate-reid
-        image: ghcr.io/tun0/frigate-reid/service:20260622072148 # {"$imagepolicy": "flux-system:frigate-reid-policy"}
+        image: ghcr.io/tun0/frigate-reid/service:20260622134824 # {"$imagepolicy": "flux-system:frigate-reid-policy"}
         imagePullPolicy: Always
         env:
         - name: MQTT_HOST
