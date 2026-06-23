@@ -81,7 +81,7 @@ TRANSFORM = T.Compose([
 ])
 
 
-PRESENCE_OFF_DELAY = int(os.environ.get("PRESENCE_OFF_DELAY", "300"))
+PRESENCE_OFF_DELAY = int(os.environ.get("PRESENCE_OFF_DELAY", "60"))
 
 
 def publish_discovery(client: mqtt.Client, gallery: dict[str, np.ndarray]) -> None:
