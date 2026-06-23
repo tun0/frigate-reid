@@ -69,6 +69,7 @@ EMBEDDING_TTL = int(os.environ["EMBEDDING_TTL"])
 TARGET_ZONES = set(os.environ["TARGET_ZONES"].split(","))
 TARGET_LABELS = set(os.environ["TARGET_LABELS"].split(","))
 SNAPSHOT_DIR: str | None = os.environ.get("SNAPSHOT_DIR") or None
+GALLERY_PATH: str | None = os.environ.get("GALLERY_PATH") or None
 
 INPUT_TOPIC = "frigate/events"
 OUTPUT_TOPIC = "frigate/events/filtered"
@@ -78,6 +79,34 @@ TRANSFORM = T.Compose([
     T.ToTensor(),
     T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
+
+
+def load_gallery(path: str) -> dict[str, np.ndarray]:
+    """Load named identity gallery from JSON. Returns {name: mean_embedding}."""
+    try:
+        with open(path) as f:
+            raw = json.load(f)
+        gallery = {name: np.mean(np.array(embs), axis=0) for name, embs in raw.items()}
+        # Re-normalise averaged embeddings
+        for name, emb in gallery.items():
+            norm = np.linalg.norm(emb)
+            if norm > 0:
+                gallery[name] = emb / norm
+        log.info("Gallery loaded: %s", ", ".join(f"{n}({len(raw[n])})" for n in gallery))
+        return gallery
+    except Exception as exc:
+        log.warning("Could not load gallery from %s: %s", path, exc)
+        return {}
+
+
+def identify(emb: np.ndarray, gallery: dict[str, np.ndarray], threshold: float) -> str | None:
+    """Return the best-matching gallery identity if above threshold, else None."""
+    best_name, best_sim = None, threshold - 0.01
+    for name, gallery_emb in gallery.items():
+        sim = float(np.dot(emb, gallery_emb))
+        if sim > best_sim:
+            best_sim, best_name = sim, name
+    return best_name
 
 
 def load_model() -> torch.nn.Module:
@@ -198,7 +227,7 @@ def is_zone_entry(payload: dict) -> tuple[bool, list[str]]:
     return bool(new_zones), new_zones
 
 
-def make_handler(model: torch.nn.Module, store: EmbeddingStore, client: mqtt.Client):
+def make_handler(model: torch.nn.Module, store: EmbeddingStore, gallery: dict[str, np.ndarray], client: mqtt.Client):
     def on_message(_client, _userdata, msg: mqtt.MQTTMessage) -> None:
         try:
             payload = json.loads(msg.payload.decode())
@@ -228,9 +257,14 @@ def make_handler(model: torch.nn.Module, store: EmbeddingStore, client: mqtt.Cli
             log.info("DUPLICATE (sim=%.2f) %s/%s/%s → matched %s", similarity, camera, label, event_id, matched_id)
             save_snapshot(img, camera, label, event_id, new_zones, "dup", similarity, matched_id)
         else:
-            log.info("NEW → forwarded      %s/%s/%s", camera, label, event_id)
+            identity = identify(emb, gallery, SIMILARITY_THRESHOLD) if gallery else None
+            if identity:
+                log.info("NEW → forwarded      %s/%s/%s [%s]", camera, label, event_id, identity)
+                payload["after"]["identity"] = identity
+            else:
+                log.info("NEW → forwarded      %s/%s/%s", camera, label, event_id)
             save_snapshot(img, camera, label, event_id, new_zones, "new", similarity, None)
-            client.publish(OUTPUT_TOPIC, msg.payload, qos=0, retain=False)
+            client.publish(OUTPUT_TOPIC, json.dumps(payload).encode(), qos=0, retain=False)
 
     return on_message
 
@@ -241,6 +275,8 @@ def main() -> None:
     log.info("Model ready (OSNet x0.25, 512-dim re-ID features).")
     if SNAPSHOT_DIR:
         log.info("Snapshots → %s", SNAPSHOT_DIR)
+
+    gallery = load_gallery(GALLERY_PATH) if GALLERY_PATH else {}
 
     store = EmbeddingStore(ttl=EMBEDDING_TTL)
 
@@ -254,7 +290,7 @@ def main() -> None:
             log.error("MQTT connect failed: %s", reason_code)
 
     client.on_connect = on_connect
-    client.on_message = make_handler(model, store, client)
+    client.on_message = make_handler(model, store, gallery, client)
     client.connect(MQTT_HOST, MQTT_PORT, keepalive=60)
     log.info("Subscribing to %s → publishing new detections to %s", INPUT_TOPIC, OUTPUT_TOPIC)
     client.loop_forever()
