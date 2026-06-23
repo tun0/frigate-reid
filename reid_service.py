@@ -81,6 +81,31 @@ TRANSFORM = T.Compose([
 ])
 
 
+PRESENCE_OFF_DELAY = int(os.environ.get("PRESENCE_OFF_DELAY", "300"))
+
+
+def publish_discovery(client: mqtt.Client, gallery: dict[str, np.ndarray]) -> None:
+    """Publish HA MQTT discovery config for each gallery identity."""
+    device = {"identifiers": ["frigate_reid"], "name": "Frigate Re-ID", "model": "OSNet x0.25"}
+    for name in gallery:
+        config = {
+            "name": f"{name} present",
+            "unique_id": f"frigate_reid_presence_{name}",
+            "device_class": "presence",
+            "state_topic": f"frigate/presence/{name}",
+            "payload_on": "ON",
+            "off_delay": PRESENCE_OFF_DELAY,
+            "device": device,
+        }
+        client.publish(
+            f"homeassistant/binary_sensor/frigate_reid_presence_{name}/config",
+            json.dumps(config),
+            qos=1,
+            retain=True,
+        )
+    log.info("Published MQTT discovery for %d presence sensors", len(gallery))
+
+
 def load_gallery(path: str) -> dict[str, np.ndarray]:
     """Load named identity gallery from JSON. Returns {name: mean_embedding}."""
     try:
@@ -266,6 +291,7 @@ def make_handler(model: torch.nn.Module, store: EmbeddingStore, gallery: dict[st
             if identity:
                 log.info("NEW → forwarded      %s/%s/%s [%s]", camera, label, event_id, identity)
                 payload["after"]["identity"] = identity
+                client.publish(f"frigate/presence/{identity}", "ON", qos=0, retain=False)
             else:
                 log.info("NEW → forwarded      %s/%s/%s", camera, label, event_id)
             save_snapshot(img, camera, label, event_id, new_zones, "new", similarity, None)
@@ -291,6 +317,8 @@ def main() -> None:
         if reason_code == 0:
             c.subscribe(INPUT_TOPIC, qos=0)
             log.info("Connected to MQTT, subscribed to %s", INPUT_TOPIC)
+            if gallery:
+                publish_discovery(c, gallery)
         else:
             log.error("MQTT connect failed: %s", reason_code)
 
