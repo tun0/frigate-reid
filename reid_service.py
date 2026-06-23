@@ -99,14 +99,19 @@ def load_gallery(path: str) -> dict[str, np.ndarray]:
         return {}
 
 
+GALLERY_MARGIN = float(os.environ.get("GALLERY_MARGIN", "0.08"))
+
+
 def identify(emb: np.ndarray, gallery: dict[str, np.ndarray], threshold: float) -> str | None:
-    """Return the best-matching gallery identity if above threshold, else None."""
-    best_name, best_sim = None, threshold - 0.01
-    for name, gallery_emb in gallery.items():
-        sim = float(np.dot(emb, gallery_emb))
-        if sim > best_sim:
-            best_sim, best_name = sim, name
-    return best_name
+    """Return gallery identity only if clearly above threshold AND ahead of runner-up by GALLERY_MARGIN."""
+    sims = {name: float(np.dot(emb, g)) for name, g in gallery.items()}
+    ranked = sorted(sims.values(), reverse=True)
+    best_name = max(sims, key=lambda n: sims[n])
+    best_sim = ranked[0]
+    second_sim = ranked[1] if len(ranked) > 1 else 0.0
+    if best_sim >= threshold and (best_sim - second_sim) >= GALLERY_MARGIN:
+        return best_name
+    return None
 
 
 def load_model() -> torch.nn.Module:
