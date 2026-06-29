@@ -33,7 +33,7 @@ spec:
           value: "1"
       containers:
       - name: frigate
-        image: ghcr.io/blakeblackshear/frigate:0.17.1 # {"$imagepolicy": "flux-system:frigate-policy"}
+        image: ghcr.io/blakeblackshear/frigate:0.17.2 # {"$imagepolicy": "flux-system:frigate-policy"}
         imagePullPolicy: IfNotPresent
         ports:
         - name: http
