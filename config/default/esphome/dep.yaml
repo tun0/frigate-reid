@@ -24,7 +24,7 @@ spec:
             value: "1"
       containers:
         - name: esphome-app
-          image: esphome/esphome:2026.6.2 # {"$imagepolicy": "flux-system:esphome-policy"}
+          image: esphome/esphome:2026.6.4 # {"$imagepolicy": "flux-system:esphome-policy"}
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true
