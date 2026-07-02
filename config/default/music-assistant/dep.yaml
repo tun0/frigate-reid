@@ -22,7 +22,7 @@ spec:
             value: "1"
       containers:
       - name: app
-        image: ghcr.io/music-assistant/server:2.8.8
+        image: ghcr.io/music-assistant/server:2.9.5
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8095
