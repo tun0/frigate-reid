@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: transmission
-        image: haugene/transmission-openvpn:5.4
+        image: haugene/transmission-openvpn:5.5
         imagePullPolicy: IfNotPresent
         envFrom:
         - configMapRef:
